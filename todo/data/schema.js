@@ -70,8 +70,12 @@ const {nodeInterface, nodeField} = nodeDefinitions(
 
 const GraphQLTodo = new GraphQLObjectType({
   name: 'Todo',
+  description:'...',
+
+
   fields: {
     id: globalIdField('Todo'),
+    
     text: {
       type: GraphQLString,
       resolve: (obj) => obj.text,

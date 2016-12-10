@@ -92,7 +92,7 @@ class Todo extends React.Component {
           <button
             className="destroy"
             onClick={this._handleDestroyClick}
-          />
+          >remove</button>
         </div>
         {this.state.isEditing && this.renderTextInput()}
       </li>

@@ -22,13 +22,17 @@ const GRAPHQL_PORT = 8080;
 
 // Expose a GraphQL endpoint
 const graphQLServer = express();
-graphQLServer.use('/', graphQLHTTP({schema, pretty: true}));
+graphQLServer.use('/', graphQLHTTP({schema, graphiql: true, pretty: true}));
+//access http://localhost:8080/graphql to see graphiQL UI
+
 graphQLServer.listen(GRAPHQL_PORT, () => console.log(
   `GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}`
 ));
 
 // Serve the Relay app
 const compiler = webpack({
+  debug:true,
+  devtool:'source-map',
   entry: path.resolve(__dirname, 'js', 'app.js'),
   module: {
     loaders: [

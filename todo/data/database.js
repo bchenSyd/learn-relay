@@ -31,6 +31,11 @@ const todoIdsByUser = {
 let nextTodoId = 0;
 addTodo('Taste JavaScript', true);
 addTodo('Buy a unicorn', false);
+addTodo('Learn Relay', false);
+addTodo('Learn typescript', false);
+addTodo('talk to domain', false);
+addTodo('sign contract with unibet', false);
+addTodo('build interview question list', false);
 
 export function addTodo(text, complete) {
   const todo = new Todo();
