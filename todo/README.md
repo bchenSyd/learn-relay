@@ -1,40 +1,143 @@
-# Relay TodoMVC
-
-## Installation
-
+## GraphQL Type System
 ```
-npm install
+{
+
+  MutationType:__type(name:"Mutation"){
+  fields{
+    name
+  }
+  },
+
+  queryType:__type(name:"Query"){
+  fields{
+    name
+  }
+  }
+
+}
 ```
+//server.js
+import express from 'express'
+import graphQLHTTP from 'express-grahql'
+import DataLoader from 'dataloader'
 
-## Running
+import schema from './schema'
 
-Start a local server:
+//hoist getPerson up
+const python_django_person_rest_url = 'http://localhost:5000/person/'
+function GetPersonById(id){
+    return fetch(`${python_django_person_rest_url}${id}`)
+}
+const app = express()
+app.user(graphQLHTTP(res =>{
+    const personaLoader = new DataLoader(
+        keys => Promise.all(keys.map(getPersonById))
+    )
+    const loaders = {
+        person: personLoader
+    }
+    return {
+    context: {loaders}
+    schema,
+    graphiQL: true
+    }))
+// app.user(graphQLHTTP({
+//     schema,
+//     graphiQL: true}))    
+app.listen(5000)
 
-```
-npm start
-```
 
-## Developing
+//schema.js
+import {
+    GraphQLLSchema
+    GraphQLObjectType,
+    GraphQLString,
+    GraphQLList
+} from 'graphql'
 
-Any changes you make to files in the `js/` directory will cause the server to
-automatically rebuild the app and refresh your browser.
 
-If at any time you make changes to `data/schema.js`, stop the server,
-regenerate `data/schema.json`, and restart the server:
+//hoist getPerson up
+const python_django_person_rest_url = 'http://localhost:5000/person/'
+function GetPersonById(id){
+    return fetch(`${python_django_person_rest_url}${id}`)
+}
 
-```
-npm run update-schema
-npm start
-```
+const PersonType = new GraphQLObjectType({
+    name:'Person',
+    descriptioin:'...',
 
-## License
+    fields:()=>({
+        firstName: {
+            type :GraphQLString,
+            resolve: (obj) => obj.first_name // map camelcase with underscore in django
+        },
+        id : {type: GraphQLString},
+        friends:{
+            type: new GraphQLList(PersonType),
+            resolve: (obj, args, {loader}) => 
+                loaders.person.loadMany(obj.firends) //use dataloader
+                //obj.friends.map(GetPersonById)
+        }
+    })
+})
 
-    This file provided by Facebook is for non-commercial testing and evaluation
-    purposes only.  Facebook reserves all rights not expressly granted.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-    FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
-    ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
-    CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+const QueryType = new GraphQLObjectType({
+    name:'Query',
+    descriptioin: '...',
+
+    fields : ()=>({
+        person: {
+            type: PersonType,
+            args:{
+                id:{type: GraphQLString} 
+            },
+            resolve:(root, args, {loaders}) => 
+               loaders.person.load(args.id) //use dataloader;
+               //GetPersonById(args.id) //GetPersonById is a promise, 'this is HUGE! this opens a new world of asychronize goodies'
+        }
+    })
+})
+
+export default new GraphQLLSchema({
+    query: QueryType
+})
+
+
+{
+    person(id:"1"){
+        firstName
+        lastName
+        email
+        username
+        friends{
+            firstName,
+            email
+        }
+    }
+}
+
+===>
+
+{
+    data:{
+        person:{
+            firstName: 'bo'
+            lastName:'chen',
+            email:'bochen2014@yahoo.com',
+            username:'bochen2014',
+            firends:[
+                {   firstName:'chris'
+                    email:'chris@gmail.com'
+                },
+                {
+                    firstName:'rowen',
+                    email:'rowen@gmail.com
+                }
+            ]
+        }
+    }
+}
+
+

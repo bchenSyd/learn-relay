@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "start": "babel-node ./server.js",
+    "bchen":"nodemon ./bchen.js  --exec babel-node",
     "update-schema": "babel-node ./scripts/updateSchema.js"
   },
   "dependencies": {
