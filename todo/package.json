@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "start": "babel-node ./server.js",
-    "bchen":"nodemon ./bchen.js  --exec babel-node",
+    "muck-around":"nodemon ./muck_around/server.js  --exec babel-node",
+    "update-schema-muckaround":"babel-node ./muck_around/generateSchemaJson.js",
     "update-schema": "babel-node ./scripts/updateSchema.js"
   },
   "dependencies": {

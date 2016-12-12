@@ -1,0 +1,22 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Mutation {
+  incrementCounter: Int
+  message: String
+}
+
+type Person {
+  id: Int
+  name: String
+  age: Int
+  debug: String
+  friends: [Person]
+}
+
+type Query {
+  counter: Int
+  person(id: Int): Person
+}

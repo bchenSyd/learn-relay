@@ -6,13 +6,6 @@ import {
     GraphQLList
 } from 'graphql'
 
-import express from 'express';
-import graphQLHTTP from 'express-graphql';
-import path from 'path';
-import webpack from 'webpack';
-import WebpackDevServer from 'webpack-dev-server';
-
-const GRAPHQL_PORT = 8002
 let counter = 10
 
 const PersonType = new GraphQLObjectType({
@@ -90,13 +83,4 @@ const schema = new GraphQLSchema({
     })
 })
 
-
-// Expose a GraphQL endpoint
-const graphQLServer = express();
-graphQLServer.use('/', graphQLHTTP({ schema, graphiql: true, pretty: true }));
-
-graphQLServer.listen(GRAPHQL_PORT, () => console.log(
-    `GraphQL Server is now running on http://localhost:${GRAPHQL_PORT}`
-));
-
-
+export default schema
