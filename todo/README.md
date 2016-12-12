@@ -105,7 +105,7 @@ export default new GraphQLLSchema({
 })
 
 
-{
+query you_must_give_a_name_to_satisfy_relay{
     person(id:"1"){
         firstName
         lastName
