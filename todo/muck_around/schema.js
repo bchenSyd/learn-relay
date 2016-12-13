@@ -39,8 +39,8 @@ const PersonType = new GraphQLObjectType({
     })
 })
 
-const QueryType = new GraphQLObjectType({
-        name: 'Query',
+const StoreType = new GraphQLObjectType({
+        name: 'Store',
         description: '...',
 
         fields: () => ({
@@ -66,7 +66,7 @@ const QueryType = new GraphQLObjectType({
     })
 
 const schema = new GraphQLSchema({
-    query: QueryType,
+    query: StoreType,
 
     mutation: new GraphQLObjectType({
         name: 'Mutation',

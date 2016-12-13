@@ -1,5 +1,5 @@
 schema {
-  query: Query
+  query: Store
   mutation: Mutation
 }
 
@@ -16,7 +16,7 @@ type Person {
   friends: [Person]
 }
 
-type Query {
+type Store {
   counter: Int
   person(id: Int): Person
 }
