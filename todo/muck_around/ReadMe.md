@@ -1,3 +1,5 @@
+https://www.reindex.io/blog/redux-and-relay/
+
 1. `babel-relay-plugin` transpiles graphql queries into IIFE expression. 
 The IIFE returns a query descriptor which can be executed under ES5 syntax
 Relay.QL`

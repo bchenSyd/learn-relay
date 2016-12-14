@@ -1,0 +1,20 @@
+{
+  "name": "muck_around",
+  "version": "1.0.0",
+  "description": "bo chen's muck around with graphQL",
+  "main": "index.js",
+  "scripts": {
+    "start-server": "nodemon ./server.js  --exec babel-node  --ignore  schema.json",
+    "update-schema": "babel-node ./generateSchemaJson.js",
+    "start": "webpack-dev-server --port 8003 --inline",
+    "bchen":"babel-node"
+  },
+  "author": "",
+  "license": "ISC",
+   "dependencies": {
+    
+  },
+  "devDependencies": {
+    "babel-cli": "^6.11.4"
+  }
+}

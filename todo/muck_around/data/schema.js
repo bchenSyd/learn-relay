@@ -66,7 +66,15 @@ const StoreType = new GraphQLObjectType({
     })
 
 const schema = new GraphQLSchema({
-    query: StoreType,
+    query: new GraphQLObjectType({
+        name:'Query',
+        fields:()=> ({
+            store:{
+                type: StoreType,
+                resolve:()=>({})
+            }
+        })
+    }),
 
     mutation: new GraphQLObjectType({
         name: 'Mutation',

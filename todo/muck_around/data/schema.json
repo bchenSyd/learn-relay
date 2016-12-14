@@ -2,13 +2,36 @@
   "data": {
     "__schema": {
       "queryType": {
-        "name": "Store"
+        "name": "Query"
       },
       "mutationType": {
         "name": "Mutation"
       },
       "subscriptionType": null,
       "types": [
+        {
+          "kind": "OBJECT",
+          "name": "Query",
+          "description": null,
+          "fields": [
+            {
+              "name": "store",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "OBJECT",
+                "name": "Store",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [],
+          "enumValues": null,
+          "possibleTypes": null
+        },
         {
           "kind": "OBJECT",
           "name": "Store",
