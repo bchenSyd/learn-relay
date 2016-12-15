@@ -6,7 +6,7 @@
   "presets": [
     {
       "plugins": [
-        "./build/babelRelayPlugin"
+        "./build/babelRelayMuckaround"
       ]
     },
     "react",

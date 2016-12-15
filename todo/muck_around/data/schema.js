@@ -11,10 +11,6 @@ let counter = 10
 const PersonType = new GraphQLObjectType({
     name: 'Person',
     fields: () => ({
-        id: {
-            type: GraphQLInt,
-            resolve: () => ++counter
-        },
         name: {
             type: GraphQLString,
             resolve: (obj) => `${obj.first_name} ${obj.last_name}`
@@ -28,12 +24,9 @@ const PersonType = new GraphQLObjectType({
         friends: {
             type: new GraphQLList(PersonType),
             resolve: (obj) => ([{
-                id:obj.friends[0],
                 first_name:'Joanna',
                 last_name:'chen',
-                age:6,
-                friends:[1,3],
-                debug: `from ${obj.id}`
+                age:6
             }])
         }
     })
@@ -49,17 +42,13 @@ const StoreType = new GraphQLObjectType({
                 resolve: () => counter
             },
             person: {
-                type: PersonType,
-                args: {
-                    id: { type: GraphQLInt }
-                },
+                type: PersonType,               
                 resolve: (root, args) => ({
-                    id: 1,
                     first_name: 'bo',
                     last_name: 'chen',
                     age: 34,
-                    friends: [2, 3, 4],
-                    debug:`${args.id}`
+                    friends: [2, 3, 4]
+                  
                 })
             }
         })

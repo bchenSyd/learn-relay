@@ -1,9 +1,9 @@
 //npm run "update-schema": "babel-node ./muck_around/generateSchemaJson.js
 import fs from 'fs';
 import path from 'path';
-import schema  from './schema';
+import schema  from '../data/schema';
 import { graphql } from 'graphql';
-import { introspectionQuery, printSchema } from 'graphql/utilities';
+import { introspectionQuery, printSchema } from 'graphql/utilities'; 
 
 // Save JSON of full schema introspection for Babel Relay Plugin to use
 (async () => {
@@ -14,8 +14,9 @@ import { introspectionQuery, printSchema } from 'graphql/utilities';
       JSON.stringify(result.errors, null, 2)
     );
   } else {
+    console.log('************** update schema  ********************')
     fs.writeFileSync(
-      path.join(__dirname, './schema.json'),
+      path.join(__dirname, '../data/schema.json'),
       JSON.stringify(result, null, 2)
     );
   }
@@ -23,6 +24,6 @@ import { introspectionQuery, printSchema } from 'graphql/utilities';
 
 // Save user readable type system shorthand of schema
 fs.writeFileSync(
-  path.join(__dirname, './schema.graphql'),
+  path.join(__dirname, '../data/schema.graphql'),
   printSchema(schema)
 );

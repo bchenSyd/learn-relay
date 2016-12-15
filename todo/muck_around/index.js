@@ -8,7 +8,7 @@ import About from './component/about'
 class HomeRoute extends Relay.Route {
   static routeName = 'Home'
   static queries = {
-    store1: (Component) => Relay.QL`
+    store: (Component) => Relay.QL`
             query {
                 store {
                   ${Component.getFragment('store')}

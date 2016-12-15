@@ -5,9 +5,12 @@ import Relay from 'react-relay'
 class Home extends Component {
     render(){
         console.log('test')
-        const {store} = this.props
+        const {store:{ counter,person:{name}} } = this.props
         return(
-            <h1>{store.counter}</h1>
+            <div>
+                <h1>{counter}</h1>
+                <h1>{name}</h1>
+            </div>
         )
     }
 }
@@ -16,9 +19,11 @@ Home = Relay.createContainer(Home,{
     fragments:{
         store: ()=>Relay.QL`
             fragment on Store{
-               #you can refer to counter here, but not person, 
-               #if you want to refer to person, you need another fragment
-               counter
+               counter,
+               person{
+                   name,
+                   age
+               }
             }`
     }
 })
