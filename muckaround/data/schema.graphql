@@ -8,11 +8,14 @@ type Mutation {
   message: String
 }
 
-type Person {
+interface Node {
+  id: ID!
+}
+
+type Person implements Node {
+  id: ID!
   name: String
   age: Int
-  debug: String
-  friends: [Person]
 }
 
 type Query {
