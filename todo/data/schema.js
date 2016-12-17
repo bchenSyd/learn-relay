@@ -48,9 +48,31 @@ import {
   renameTodo,
 } from './database';
 
+/******************************************************** */
+// the purpose of nodeDefinitions is for relay to be able to get a node based on globalId 
+// two steps: 1. get an object via idFetcher(globalId)
+//            2. get the GraphQLObjectType of the object, then compare with the query, or simple build __typename;
+//               if GraphQLObjectType doesn't match query type, throw error
+/*
+{node(id:"VG9kbzox"){
+  __typename
+}}
+------>
+{
+  "data": {
+    "node": {   // via idFetcher
+      "__typename": "Todo"  //via typeResolver
+    }
+  }
+}
+ */
 const {nodeInterface, nodeField} = nodeDefinitions(
+  // idFetcher
   (globalId) => {
     const {type, id} = fromGlobalId(globalId);
+
+    console.log(`get node from node id#${type + ':' + id}`)
+
     if (type === 'Todo') {
       return getTodo(id);
     } else if (type === 'User') {
@@ -58,6 +80,11 @@ const {nodeInterface, nodeField} = nodeDefinitions(
     }
     return null;
   },
+  //type resolver
+  // we need type resolver because `node` is a base type, we can't query on a node type
+  // graphql needs to know what GraphQLObjectType the current object returned by idFetcher is, 
+  // to be able to provide query intellisense , type check...etc
+  // { node (id:"VmlkZW86Yg=="){ id, __typename, ... on Todo{ text, complete}}}
   (obj) => {
     if (obj instanceof Todo) {
       return GraphQLTodo;
@@ -67,15 +94,15 @@ const {nodeInterface, nodeField} = nodeDefinitions(
     return null;
   }
 );
-
+/******************************************************** */
 const GraphQLTodo = new GraphQLObjectType({
   name: 'Todo',
-  description:'...',
+  description: '...',
 
 
   fields: {
     id: globalIdField('Todo'),
-    
+
     text: {
       type: GraphQLString,
       resolve: (obj) => obj.text,
@@ -158,7 +185,7 @@ const GraphQLAddTodoMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: ({text}) => {
     const localTodoId = addTodo(text);
-    return {localTodoId};
+    return { localTodoId };
   },
 });
 
@@ -181,7 +208,7 @@ const GraphQLChangeTodoStatusMutation = mutationWithClientMutationId({
   mutateAndGetPayload: ({id, complete}) => {
     const localTodoId = fromGlobalId(id).id;
     changeTodoStatus(localTodoId, complete);
-    return {localTodoId};
+    return { localTodoId };
   },
 });
 
@@ -202,7 +229,7 @@ const GraphQLMarkAllTodosMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: ({complete}) => {
     const changedTodoLocalIds = markAllTodos(complete);
-    return {changedTodoLocalIds};
+    return { changedTodoLocalIds };
   },
 });
 
@@ -222,7 +249,7 @@ const GraphQLRemoveCompletedTodosMutation = mutationWithClientMutationId({
   mutateAndGetPayload: () => {
     const deletedTodoLocalIds = removeCompletedTodos();
     const deletedTodoIds = deletedTodoLocalIds.map(toGlobalId.bind(null, 'Todo'));
-    return {deletedTodoIds};
+    return { deletedTodoIds };
   },
 });
 
@@ -244,7 +271,7 @@ const GraphQLRemoveTodoMutation = mutationWithClientMutationId({
   mutateAndGetPayload: ({id}) => {
     const localTodoId = fromGlobalId(id).id;
     removeTodo(localTodoId);
-    return {id};
+    return { id };
   },
 });
 
@@ -263,7 +290,7 @@ const GraphQLRenameTodoMutation = mutationWithClientMutationId({
   mutateAndGetPayload: ({id, text}) => {
     const localTodoId = fromGlobalId(id).id;
     renameTodo(localTodoId, text);
-    return {localTodoId};
+    return { localTodoId };
   },
 });
 

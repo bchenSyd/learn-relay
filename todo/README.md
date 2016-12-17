@@ -1,3 +1,61 @@
+## graphql-relay
+```
+{ viewer{
+   todos{
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}}  =>
+
+{
+  "data": {
+    "viewer": {
+      "todos": {
+        "edges": [
+          {
+            "node": {
+              "id": "VG9kbzow"
+            }
+          },
+          {
+            "node": {
+              "id": "VG9kbzox"
+            }
+          }
+          ]
+          }
+        }
+      }
+    }
+-------------
+
+{
+  node(id:"VG9kbzo1"){
+     id,
+     __typename,
+    ... on Todo{
+      id,
+      complete,
+      text
+    }
+  }
+}==>
+{
+  "data": {
+    "node": {
+      "id": "VG9kbzo1",
+      "__typename": "Todo",
+      "complete": true,
+      "text": "sign contract with unibet"
+    }
+  }
+}
+
+```
+
 ## GraphQL Type System
 ```
 {

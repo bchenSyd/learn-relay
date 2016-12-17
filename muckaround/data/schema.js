@@ -13,11 +13,16 @@ let counter = 10
 
 export class Person { }
 
+//******************************************************************** */
+// the nodeInterface is not an interfaces, but an instance of GraphQLInterfaceType
+// it does two things:
+// 1. specify what fields the implementation class (which is an GraphQLObjectType) must implementation
+// 2. it (optionally) tells graphql what object can be converted to the graphqlObjectType
 const PersonType = new GraphQLObjectType({
     name: 'Person',
     fields: () => ({
         id: {
-            type: new  GraphQLNonNull(GraphQLID),
+            type: new GraphQLNonNull(GraphQLID),
             description: `can't use GraphQLInt...`
         },
         name: {
@@ -28,9 +33,11 @@ const PersonType = new GraphQLObjectType({
             type: GraphQLInt
         }
     }),
+    //GraphQLInterfaceType default to graphqlObjectType::isTypeOf to tell where an object can be converted to graphqlObjectType
+    //isTypeOf?: GraphQLIsTypeOfFn<TSource, TContext>;
     interfaces: [nodeInterface]
 })
-
+//******************************************************************** */
 const StoreType = new GraphQLObjectType({
     name: 'Store',
     description: '...',
