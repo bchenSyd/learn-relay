@@ -42,7 +42,7 @@ const StoreType = new GraphQLObjectType({
                 resolve: () => counter
             },
             person: {
-                type: PersonType,               
+                type: PersonType,
                 resolve: (root, args) => ({
                     first_name: 'bo',
                     last_name: 'chen',
