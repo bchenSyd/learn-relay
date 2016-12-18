@@ -118,9 +118,20 @@ const GraphQLTodo = new GraphQLObjectType({
 const {
   connectionType: TodosConnection,
   edgeType: GraphQLTodoEdge,
-} = connectionDefinitions({
+} = connectionDefinitions({  // same as GraphQLList(GraphQLTodo), just wrap the list in `edges`
   name: 'Todo',
   nodeType: GraphQLTodo,
+  connectionFields:()=>({
+    // a connection type by default has 'edges' and 'pageInfo' fields
+    // now we are adding the third one, which is a custom one;
+    totalCount:{
+      type: GraphQLInt,
+      description:' a custom connection field. will be defined at connectionType level',
+      resolve:(connection)=>{
+          return connection.edges.length;
+      }
+    }
+  })
 });
 
 const GraphQLUser = new GraphQLObjectType({

@@ -1,4 +1,5 @@
 ## graphql-relay
+* nodeInterface
 ```
 { viewer{
    todos{
@@ -55,6 +56,54 @@
 }
 
 ```
+* connection
+
+```
+{viewer{
+    todos (first: 2){ //this is the connection, it's important to notice that a connect is essentially a list<GraphQLObjectType>
+      customField,
+      edges{
+        node{
+          id,
+          
+          text
+        }
+      },
+      pageInfo{
+         hasNextPage
+      }
+    }
+}}
+--------->
+{
+  "data": {
+    "viewer": {
+      "todos": { // the `selector` here, e.g. first/ last /before/ after..etc , determines length of edges
+        "customField": "custom",
+        "edges": [  // the length of `edges` is determined by selector in the connection 
+          {
+            "node": {
+              "id": "VG9kbzow",
+              "text": "Taste JavaScript"
+            }
+          },
+          {
+            "node": {
+              "id": "VG9kbzox",
+              "text": "Buy a unicorn"
+            }
+          }
+        ],
+        "pageInfo": {
+          "hasNextPage": false
+        }
+      }
+    }
+
+  }
+}
+```
+
 
 ## GraphQL Type System
 ```
