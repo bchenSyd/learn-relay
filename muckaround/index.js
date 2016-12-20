@@ -8,6 +8,7 @@ import About from './component/about'
 class HomeRoute extends Relay.Route {
   static routeName = 'Home'
   static queries = {
+    //similar as a JSX can only have one root node, a root query can only have one root fragment, which is the viewer/store fragment
     store1: (Component) => {
       /*IN SHORT, RELAY MAPS THE FRAGMENTREFERENCE THAT HAS THE SAME NAME AS ROOTQUERY TO THE FETCHED RESULT */
 
@@ -19,7 +20,7 @@ class HomeRoute extends Relay.Route {
       // queryName : store1,  fragmentName declared in Landingpage : store1  => match
       // root query fragmentReference : null  => fail
       // the result won't have fetched data; but still have the raw __fragments__ which is the parsed inline query below
-      const transformedQuery1 = Relay.QL` query{ 
+      const inlineQuery = Relay.QL` query{ 
         store{ 
           ... on Store{ 
             counter,
@@ -36,13 +37,13 @@ class HomeRoute extends Relay.Route {
       // root query fragmentReference : yes. the rootQuery contains a fragmentReference , although fagment name might be different
      // fragmentReferences with the same name is replaced with actual value. if fragment name is different, you get `null`, which has been proven
      // this is why we empharsize that rootquery can only contains one fragment and no field, the fragment name must be the same as root query name
-      const transformedQuery2 = Relay.QL`query {
+      const fragmentQuery = Relay.QL`query {
                 store {
                     ${fragment}
                   }
             }`
      
-     return transformedQuery2 // bchen: change it to transformedQuery1
+     return inlineQuery // bchen: change it to transformedQuery1
     }
   }
 }

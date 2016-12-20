@@ -11,7 +11,7 @@ class LandingPage extends Component {
         return (
             <div>
                 <div>counter:{counter}</div>
-                <Person person={person}/>
+                <Person person={person} />
             </div>
         )
     }
@@ -25,7 +25,8 @@ LandingPage = Relay.createContainer(LandingPage, {
         // you can call the fragement whatever you want, but the name you picked here must be 
         // consistent with the query name in homeRoute rootQuery name
         // bchen:change fragment name to `store2`
-        store1: () => Relay.QL`
+        store1: () => {
+            const fragmentQuery = Relay.QL`
             fragment on Store{
                counter,
                person{
@@ -33,6 +34,20 @@ LandingPage = Relay.createContainer(LandingPage, {
                }
                
             }`
+            //deprecated: let component express what they need. if PersonComponent in the future needs more data, 
+            //            we should only update PersonComponent , but its parent
+            //the concept of `let's component express what they need` is strongly advocated by relay
+            const inlineQuery = Relay.QL`
+            fragment on Store{
+                counter,
+                person{
+                    id,
+                    name,
+                    age
+                }
+            }`
+            return inlineQuery
+        }
     }
 })
 export default LandingPage
