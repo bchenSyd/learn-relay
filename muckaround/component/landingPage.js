@@ -1,15 +1,17 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import Relay from 'react-relay'
+import Person from './person'
 
-
+//When using Relay, a react component should be mapped to a graphQL Type
+//the landing page is mapped to viewer/store fo graphql root query
 class LandingPage extends Component {
-    render(){
-        console.log('test')
-        const {store1:{ counter,person:{name}} } = this.props
-        return(
+    render() {
+        console.log('insert your break point here...')
+        const {store1: { counter, person} } = this.props
+        return (
             <div>
-                <h1>{counter}</h1>
-                <h1>{name}</h1>
+                <div>counter:{counter}</div>
+                <Person person={person}/>
             </div>
         )
     }
@@ -18,18 +20,18 @@ class LandingPage extends Component {
 //one rootquery can only contains one fragment and no fields. the fragment and root query must share the same name
 //the fragmentReference (returned by Relaycontainer.getFragment) will be replaced with the actual fetched data ONLY IF name matches
 //so if you put fragment name to `store2`, at runtime, the value is `null`
-LandingPage = Relay.createContainer(LandingPage,{
-    fragments:{
+LandingPage = Relay.createContainer(LandingPage, {
+    fragments: {
         // you can call the fragement whatever you want, but the name you picked here must be 
         // consistent with the query name in homeRoute rootQuery name
         // bchen:change fragment name to `store2`
-        store1: ()=>Relay.QL`
+        store1: () => Relay.QL`
             fragment on Store{
                counter,
                person{
-                   name,
-                   age
+                 ${Person.getFragment('person')}
                }
+               
             }`
     }
 })
