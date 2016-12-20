@@ -23,9 +23,9 @@ class Todo extends React.Component {
   state = {
     isEditing: false,
   };
-  // babel stage 2 feature
-  //  http://www.webpackbin.com/Vys1jFkNf
 
+  // babel stage 2 feature, see: https://babeljs.io/docs/plugins/preset-stage-2/
+  // example: http://www.webpackbin.com/Vys1jFkNf
   _handleCompleteChange = (e) => {
     const complete = e.target.checked;
     this.props.relay.commitUpdate(

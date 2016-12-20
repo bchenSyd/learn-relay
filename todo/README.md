@@ -248,3 +248,6 @@ query you_must_give_a_name_to_satisfy_relay{
 }
 
 
+## typescript
+the [graphql type declaration](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/types-2.0/graphql/index.d.ts ) 
+is still using old syntax, i.e. defined as global modlue rather than an external module

@@ -5,7 +5,7 @@ import Relay from 'react-relay'
 class Home extends Component {
     render(){
         console.log('test')
-        const {store:{ counter,person:{name}} } = this.props
+        const {store1:{ counter,person:{name}} } = this.props
         return(
             <div>
                 <h1>{counter}</h1>
@@ -17,7 +17,9 @@ class Home extends Component {
 
 Home = Relay.createContainer(Home,{
     fragments:{
-        store: ()=>Relay.QL`
+        /// you can call the fragement whatever you want, but the name you picked here must be 
+        /// consistent with the query name in homeRoute rootQuery name 
+        store1: ()=>Relay.QL`
             fragment on Store{
                counter,
                person{
