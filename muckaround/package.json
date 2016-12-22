@@ -6,8 +6,9 @@
   "scripts": {
     "start-server": "nodemon ./server.js  --exec babel-node ",
     "start-server-v2": "nodemon ./server.js  --exec babel-node --ignore  data/schema.json --ignore data/schema.graphql",
+    "start-client":"webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",
-    "start": "webpack-dev-server --port 8003 --inline",
+    "start": "npm-run-all --parallel start-server   start-client",
     "bchen": "babel-node"
   },
   "author": "",

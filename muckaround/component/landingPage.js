@@ -6,12 +6,16 @@ import Person from './person'
 //the landing page is mapped to viewer/store fo graphql root query
 class LandingPage extends Component {
     render() {
-        console.log('insert your break point here...')
-        const {store1: { counter, person} } = this.props
+      
+        const {store1: { counter , person}  } = this.props
+        console.log(`insert your break point here...  ${person.name}`)
         return (
             <div>
                 <div>counter:{counter}</div>
-                <Person person={person} />
+                {/* this won't cause issue*/}
+                <h2>person name: {person.name}</h2> 
+                {/* this cause a warning: component PersonComponent was rendered with variables that differ from the variables used to fetch fragment person*/}
+                <Person person = {person}/>  
             </div>
         )
     }
@@ -25,29 +29,14 @@ LandingPage = Relay.createContainer(LandingPage, {
         // you can call the fragement whatever you want, but the name you picked here must be 
         // consistent with the query name in homeRoute rootQuery name
         // bchen:change fragment name to `store2`
-        store1: () => {
-            const fragmentQuery = Relay.QL`
-            fragment on Store{
-               counter,
-               person{
-                 ${Person.getFragment('person')}
-               }
-               
-            }`
-            //deprecated: let component express what they need. if PersonComponent in the future needs more data, 
-            //            we should only update PersonComponent , but its parent
-            //the concept of `let's component express what they need` is strongly advocated by relay
-            const inlineQuery = Relay.QL`
+        store1: () => Relay.QL`
             fragment on Store{
                 counter,
                 person{
-                    id,
-                    name,
-                    age
+                    
+                    ${Person.getFragment('person')}
                 }
             }`
-            return inlineQuery
-        }
     }
 })
 export default LandingPage
