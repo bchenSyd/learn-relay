@@ -4,7 +4,7 @@ import {
     GraphQLID
 } from 'graphql'
 
-import { Person,PersonType } from './schema'
+import { Person, PersonType, Store, StoreType } from './schema'
 const nodeInterface = new GraphQLInterfaceType({
     name: 'Node',
     fields: {
@@ -21,9 +21,11 @@ const nodeInterface = new GraphQLInterfaceType({
          * the default implementation will call `isTypeOf` on each implementing
          * Object type.
    */
-    resolveType: (obj)=>{
-        if(obj instanceof Person){
+    resolveType: (obj) => {
+        if (obj instanceof Person) {
             return PersonType
+        } else if (obj instanceof Store) {
+            return StoreType
         }
         return null
     }

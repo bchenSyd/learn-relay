@@ -1,5 +1,6 @@
 import {
     GraphQLSchema,
+    GraphQLInputObjectType,
     GraphQLObjectType,
     GraphQLNonNull,
     GraphQLID,
@@ -12,6 +13,7 @@ import nodeInterface from './nodeInterface'
 let counter = 10
 
 export class Person { }
+export class Store { }
 
 //******************************************************************** */
 // the nodeInterface is not an interfaces, but an instance of GraphQLInterfaceType
@@ -23,7 +25,7 @@ const PersonType = new GraphQLObjectType({
     fields: () => ({
         id: {
             type: new GraphQLNonNull(GraphQLID),
-            description: `can't use GraphQLInt...`
+            description: `must be ID! to be relay-compliant`
         },
         name: {
             type: GraphQLString,
@@ -43,12 +45,16 @@ const StoreType = new GraphQLObjectType({
     description: '...',
 
     fields: () => ({
+        id: {
+            type: new GraphQLNonNull(GraphQLID),
+            description: `must be ID! to be relay-compliant`
+        },
         counter: {
             type: GraphQLInt,
             resolve: (root, args, {loader}) => {
-                
+
                 debugger
-                return   counter
+                return counter
             }
         },
         person: {
@@ -63,53 +69,92 @@ const StoreType = new GraphQLObjectType({
                         person.age = 34;
                         person.friends = [2, 3, 4];
                         resolve(person);
-                    }, 500); 
+                    }, 500);
                 })
         }
     }
-    )
+    ),
+    interfaces: [nodeInterface]
 }
 )
 
 
-const Query =  new GraphQLObjectType({
-        name: 'Query',
-        fields: () => ({
-            store: {
-                type: StoreType,
-                args:{
-                    id: {type: GraphQLString}
-                },
-                resolve: (root,args,{loaders}) => {
-                     debugger;
-                     console.log(root)
-                     console.log('got a root query.... args = ' + JSON.stringify(args))
-                     return { debug:'this is root store object'}
-                }
-            }
-        })
-    })
-
-const Mutation = new GraphQLObjectType({
-        name: 'Mutation',
-        fields: () => ({
-            incrementCounter: {
-                type: GraphQLInt,
-                resolve: () => ++counter
+const QueryType = new GraphQLObjectType({
+    name: 'Query',
+    fields: () => ({
+        store: {
+            type: StoreType,
+            args: {
+                id: { type: GraphQLString }
             },
-            message: {
-                type: GraphQLString,
-                resolve: () => 'hello,world!'
+            resolve: (root, args, {loaders}) => {
+                debugger;
+                console.log(root)
+                console.log('got a root query.... args = ' + JSON.stringify(args))
+                const store = new Store()
+                store.id = 'store_1'
+                return store
             }
-        })
+        }
     })
+})
+
+
+const mutationInputType = new GraphQLInputObjectType({
+    name: 'Muation_Input',
+    fields: {
+        clientMutationId: {
+            type: new GraphQLNonNull(GraphQLString)
+        }
+    }
+})
+
+const mutationOutputType = new GraphQLObjectType({
+    name: "Muation_Output",
+    fields: {
+        clientMutationId: {
+            type: new GraphQLNonNull(GraphQLString)
+        },
+        store: {
+            type: StoreType,
+            resolve: () => {
+                const store = new Store()
+                store.id = 'store_2'
+                return store
+            }
+        }
+
+    }
+})
+
+const MutationType = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: () => ({
+        incrementCounter: {
+            type: mutationOutputType,
+            args: {
+                input: {
+                    type:mutationInputType}
+            },
+            resolve: (root, args) => ({
+                clientMutationId: 'mutation_client_id',
+                counter: ++counter,
+            })
+        },
+        message: {
+            type: GraphQLString,
+            resolve: () => 'hello,world!'
+        }
+    })
+})
 
 const schema = new GraphQLSchema({
-    query: Query,
-    mutation: Mutation
+    query: QueryType,
+    mutation: MutationType
 })
 
 export default schema
 export {
-    PersonType
+    PersonType,
+    StoreType
 }

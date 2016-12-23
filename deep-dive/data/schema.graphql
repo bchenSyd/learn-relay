@@ -3,8 +3,17 @@ schema {
   mutation: Mutation
 }
 
+input Muation_Input {
+  clientMutationId: String!
+}
+
+type Muation_Output {
+  clientMutationId: String!
+  store: Store
+}
+
 type Mutation {
-  incrementCounter: Int
+  incrementCounter(input: Muation_Input): Muation_Output
   message: String
 }
 
@@ -22,7 +31,8 @@ type Query {
   store(id: String): Store
 }
 
-type Store {
+type Store implements Node {
+  id: ID!
   counter: Int
   person: Person
 }

@@ -1,10 +1,20 @@
 import React, { Component } from 'react'
 import Relay from 'react-relay'
-import Person from './person'
 
+import Person from './person'
+import increamentCounter from '../mutation/increamentCounterMutation'
 //When using Relay, a react component should be mapped to a graphQL Type
 //the landing page is mapped to viewer/store fo graphql root query
 class LandingPage extends Component {
+
+    _onMutate = event=>{
+       this.props.relay.commitUpdate(
+       /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
+       // if you don't include Person Component's fragment in LandingPage's fragment builder, you get the same warning 
+          new increamentCounter( {store: this.props.store1}) 
+       ) 
+    }
+
     render() {
       
         const {store1: { counter , person}  } = this.props
@@ -32,7 +42,7 @@ class LandingPage extends Component {
                     Error: cannot access name of undefined
                 */}
                 <Person person = {person}/>
-
+                <button onClick={this._onMutate} >Mutation</button>
 
             </div>
         )
@@ -43,6 +53,7 @@ class LandingPage extends Component {
 //the fragmentReference (returned by Relaycontainer.getFragment) will be replaced with the actual fetched data ONLY IF name matches
 //so if you put fragment name to `store2`, at runtime, the value is `null`
 LandingPage = Relay.createContainer(LandingPage, {
+    //this is called 'fragment builder'
     fragments: {
         // you can call the fragement whatever you want, but the name you picked here must be 
         // consistent with the query name in homeRoute rootQuery name
@@ -50,8 +61,9 @@ LandingPage = Relay.createContainer(LandingPage, {
         store1: () => Relay.QL`
             fragment on Store{
                 counter,
+                ${increamentCounter.getFragment('store')}
                 person{
-                    
+                    name
                     ${Person.getFragment('person')}
                 }
             }`
