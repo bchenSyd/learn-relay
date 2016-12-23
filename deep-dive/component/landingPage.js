@@ -11,13 +11,13 @@ class LandingPage extends Component {
        this.props.relay.commitUpdate(
        /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
        // if you don't include Person Component's fragment in LandingPage's fragment builder, you get the same warning 
-          new increamentCounter( {store: this.props.store1}) 
+          new increamentCounter( {mutation_store: this.props.store}) 
        ) 
     }
 
     render() {
       
-        const {store1: { counter , person}  } = this.props
+        const {store: { counter , person}  } = this.props
         console.log(`insert your break point here...  ${person.name}`)
         return (
             <div>
@@ -58,10 +58,10 @@ LandingPage = Relay.createContainer(LandingPage, {
         // you can call the fragement whatever you want, but the name you picked here must be 
         // consistent with the query name in homeRoute rootQuery name
         // bchen:change fragment name to `store2`
-        store1: () => Relay.QL`
+        store: () => Relay.QL`
             fragment on Store{
                 counter,
-                ${increamentCounter.getFragment('store')}
+                ${increamentCounter.getFragment('mutation_store')}
                 person{
                     name
                     ${Person.getFragment('person')}

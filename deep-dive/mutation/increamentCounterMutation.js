@@ -6,8 +6,9 @@ class increamentCounterMutation extends Mutation {
     //RelayConatiner:  ComponentWillMount -> setState -> _initialize -> validateFragmentProp -> getQueryDate -> render() -> Object.assign({}, this.props, this.queryData)
     //If I can't see the __fragment__ , that's an anti pattern and relay will throw warning
     static fragments = {
-        store: () => Relay.QL`
+        mutation_store: () => Relay.QL`
             fragment on Store{
+                id,
                 counter
             }`
     }
@@ -33,7 +34,7 @@ class increamentCounterMutation extends Mutation {
         return [{
             type: 'FIELDS_CHANGE',
             fieldIDs: {
-               store: this.props.store.id,
+               store: this.props.mutation_store.id,
             },
         }];
     }

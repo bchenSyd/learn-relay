@@ -16,7 +16,7 @@ class HomeRoute extends Route {
         // relay will automatically use the one RootContainer defines becuase it konws the rule 
         // **********************   Queries supplied at the root should contain exactly one fragment and no fields  *********************
         // so it would have the same effect as you would explicitly call component.getFragment('store1')
-        store1: () => Relay.QL`query{  store1:store(id: $storeId)  }`   
+        store: () => Relay.QL`query{  store(id: $storeId)  }`   
     }
 }
 
