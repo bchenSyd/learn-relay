@@ -37,6 +37,10 @@ render(<Relay.Renderer
             return <h1>failed to execute the root query</h1>
         } else if (props) {
             // the luxury of specifying properties of your Root React Component is provided by Relay.Renderer
+            /*
+                Even though we have access to the data object in renderFetched, the actual data is intentionally opaque. 
+                This prevents the renderFetched from creating an implicit dependency on the fragments declared by Component.
+             */
             return <LandingPage {...props} />
         } else {
             return <h1>waiting response for the root query....</h1>
