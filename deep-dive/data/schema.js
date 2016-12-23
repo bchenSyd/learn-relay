@@ -45,7 +45,11 @@ const StoreType = new GraphQLObjectType({
     fields: () => ({
         counter: {
             type: GraphQLInt,
-            resolve: () => counter
+            resolve: (root, args, {loader}) => {
+                
+                debugger
+                return   counter
+            }
         },
         person: {
             type: PersonType,
@@ -67,18 +71,26 @@ const StoreType = new GraphQLObjectType({
 }
 )
 
-const schema = new GraphQLSchema({
-    query: new GraphQLObjectType({
+
+const Query =  new GraphQLObjectType({
         name: 'Query',
         fields: () => ({
             store: {
                 type: StoreType,
-                resolve: () => ({})
+                args:{
+                    id: {type: GraphQLString}
+                },
+                resolve: (root,args,{loaders}) => {
+                     debugger;
+                     console.log(root)
+                     console.log('got a root query.... args = ' + JSON.stringify(args))
+                     return { debug:'this is root store object'}
+                }
             }
         })
-    }),
+    })
 
-    mutation: new GraphQLObjectType({
+const Mutation = new GraphQLObjectType({
         name: 'Mutation',
         fields: () => ({
             incrementCounter: {
@@ -91,6 +103,10 @@ const schema = new GraphQLSchema({
             }
         })
     })
+
+const schema = new GraphQLSchema({
+    query: Query,
+    mutation: Mutation
 })
 
 export default schema
