@@ -4,8 +4,8 @@
   "description": "bo chen's muck around with graphQL",
   "main": "index.js",
   "scripts": {
-    "start-server": "nodemon ./server.js  --exec babel-node ",
-    "start-server-v2": "nodemon ./server.js  --exec babel-node --ignore  data/schema.json --ignore data/schema.graphql",
+    "start-server": "nodemon ./server.js  --exec babel-node",
+    "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
     "start-client":"webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",
     "start": "npm-run-all --parallel start-server   start-client",

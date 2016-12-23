@@ -59,7 +59,7 @@ const StoreType = new GraphQLObjectType({
                         person.age = 34;
                         person.friends = [2, 3, 4];
                         resolve(person);
-                    }, 500);
+                    }, 500); 
                 })
         }
     }

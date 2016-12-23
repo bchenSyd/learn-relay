@@ -23,6 +23,9 @@ class LandingPage extends Component {
                     so relay knows how to do it;
                     Based on this, if you fool Relay but literally obeying the rule , i.e. having a query like  Relay.QL`query{store{ ... on Store{ counter, blablabla...}}`
                     this will successfully bypass Relay query validation system, becuase your rootQuery does only have one (inline) fragment and no fields
+
+                    below commants are wrong. you can specify your Root React Component's property via Relay.Renderer
+
                     **However** since React Root Container won't have the luxry of setting properties by developer, and that the fragment declared in React Root Component isn't 
                     referenced in Rect.Route, Relay just simply ignores your fragment property and hence you fragment property will be null
                     Warning: RelayContainer: Expected prop `person` to be supplied to `PersonComponent`, but got `undefined`. Pass an explicit `null` if this is intentional.
