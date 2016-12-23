@@ -14,7 +14,6 @@ type Muation_Output {
 
 type Mutation {
   incrementCounter(input: Muation_Input): Muation_Output
-  message: String
 }
 
 interface Node {

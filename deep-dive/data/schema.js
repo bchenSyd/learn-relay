@@ -119,7 +119,7 @@ const mutationOutputType = new GraphQLObjectType({
             type: StoreType,
             resolve: () => {
                 const store = new Store()
-                store.id = 'store_2'
+                store.id = 'store_1'
                 return store
             }
         }
@@ -134,16 +134,18 @@ const MutationType = new GraphQLObjectType({
             type: mutationOutputType,
             args: {
                 input: {
-                    type:mutationInputType}
+                    type: mutationInputType
+                }
             },
-            resolve: (root, args) => ({
-                clientMutationId: 'mutation_client_id',
-                counter: ++counter,
-            })
-        },
-        message: {
-            type: GraphQLString,
-            resolve: () => 'hello,world!'
+            resolve: (root, args) => (new Promise((resolve, reject) => {
+
+                setTimeout(function () {
+                    resolve({
+                        clientMutationId: 'mutation_client_id',
+                        counter: ++counter,
+                    })
+                }, 1000)
+            }))
         }
     })
 })
