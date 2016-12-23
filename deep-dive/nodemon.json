@@ -1,0 +1,4 @@
+{
+    "verbose":true,
+     "ignore":["data/schema.json","data/schema.graphql", "component/*"]
+}
