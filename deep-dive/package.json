@@ -9,8 +9,7 @@
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
     "start-client":"webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",
-    "start": "npm-run-all --parallel start-server   start-client",
-    "bchen": "babel-node"
+    "start": "npm-run-all --parallel start-server   start-client"
   },
   "author": "",
   "license": "ISC",

@@ -1,0 +1,15 @@
+ "scripts": {
+    "start-server": "nodemon ./server.js  --exec babel-node",  
+    //if you do `node --debug-brk=21024 --nolazy node_modules\babel-cli\bin\babel-node.js d:\learn-relay\deep-dive/server.js`
+    //which is what is configured in .vscode/launch.json, you can start server up, but breakpoints won't be hit
+    //so instead of lauch, do 1. npm run debug-server  2. attached to process
+    "debug-server": "babel-node ./server.js --debug-brk",
+    //here we run nodemon by explicitly passing parameters (the default `start-server` will read nodemon config from nodemon.json file)
+    "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
+    
+    "start-client":"webpack-dev-server --port 3000 --inline",
+    "update-schema": "babel-node ./script/generateSchemaJson.js",
+    
+    //npm-run-all can ONLY take npm script tasks as parameters. meaning, you can't do `npm-run-all webpack-dev-server` , or `npm-run-all node index.js`
+    "start": "npm-run-all --parallel start-server   start-client"
+  },

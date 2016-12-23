@@ -8,7 +8,13 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}\\server.js",
+            //the problem with this approach is that debug point won't picked by the node process
+            //becuause we are executing babel-node.js and it doesn't forward breakpoints to node
+            "program": "${workspaceRoot}/node_modules/babel-cli/bin/babel-node.js",
+            "stopOnEntry": false,
+            "args": [
+                "${workspaceRoot}/server.js"
+            ],
             "cwd": "${workspaceRoot}"
         },
         {
