@@ -140,6 +140,9 @@ const GraphQLUser = new GraphQLObjectType({
     id: globalIdField('User'),
     todos: {
       type: TodosConnection,
+      ///**************************************************************************************/
+      // here is a prime example of how you extend an object
+      // Object.assign({}, obj, {newProp: value}) , or simply {...obj, newProp: value}
       args: {
         status: {
           type: GraphQLString,
@@ -147,8 +150,11 @@ const GraphQLUser = new GraphQLObjectType({
         },
         ...connectionArgs,
       },
-      resolve: (obj, {status, ...args}) =>
+      ///**************************************************************************************/
+      resolve: (_, {status, ...args}) =>
         connectionFromArray(getTodos(status), args),
+      // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
+
     },
     totalCount: {
       type: GraphQLInt,
