@@ -16,8 +16,10 @@ class LandingPage extends Component {
     }
 
     render() {
-      
-        const {store: { counter , person}  } = this.props
+        
+        const {store, store: { counter , person}, relay  } = this.props
+        const transactions = relay.getPendingTransactions(store)
+        
         console.log(`insert your break point here...  ${person.name}`)
         return (
             <div>

@@ -144,7 +144,7 @@ const MutationType = new GraphQLObjectType({
                         clientMutationId: 'mutation_client_id',
                         counter: ++counter,
                     })
-                }, 1000)
+            }, 2*1000)
             }))
         }
     })
