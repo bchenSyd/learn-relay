@@ -6,10 +6,16 @@ class increamentCounterMutation extends Mutation {
     //RelayConatiner:  ComponentWillMount -> setState -> _initialize -> validateFragmentProp -> getQueryDate -> render() -> Object.assign({}, this.props, this.queryData)
     //If I can't see the __fragment__ , that's an anti pattern and relay will throw warning
     static fragments = {
-        //mutation payload won't have ID field for the root field, see  relay/traversal/writeRelayUpdatePayload.js  handleMerge() method
-        //this **implies** that the root field name MUST be the same as the root field name in your store
-        //hence naming the root field `mutation_store` won't work in optimistic mutation result
-        mutation_store: () => Relay.QL`
+        //generally speaking, since a graphql can only have one root field, that rootfield usually doesn't have a ID bound to it;
+        //hence in relay treasure hunt example, it doesn't return id for the store/viewer/game
+        //in our example though, we decided to return an id for the `store`, and this make the root fied of graphql query be aware of id
+        // the upshort is if (this._rootCallMap.hasOwnProperty(storageKey) && this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) 
+        // in RelayRecordStore.js will have `identifyingArgValue` as the `id` in your store;
+        // therefore, in your getOptimisticResponse() method, you should return an id field as well!
+
+        //in short, to make optimistic update work, the getOptimisticResponse() must return the SAME data set as the graphQL server does;
+        //this is extremely important in terms of `id` field; otherwise relay gets confused and don't know which record to update
+        store: () => Relay.QL`
             fragment on Store{
                 id,
                 counter
@@ -39,7 +45,7 @@ class increamentCounterMutation extends Mutation {
             type: 'FIELDS_CHANGE',
             fieldIDs: {
                 //if the fieldId passed in here doesn't match returned mutationPayload id, the payload will get ignored;
-                store: this.props.mutation_store.id,
+                store: this.props.store.id,
             },
         }];
     }
@@ -51,9 +57,20 @@ class increamentCounterMutation extends Mutation {
 
     getOptimisticResponse() {
         return {
-            mutation_store: {
-                counter: this.props.mutation_store.counter + 1
+             //in short, to make optimistic update work, the getOptimisticResponse() must return the SAME data set as the graphQL server does;
+            //this is extremely important in terms of `id` field; otherwise relay gets confused and don't know which record to update
+
+            // the root field (store, viewer, game) normally doesn't have `id` field since it's unique in a graphql query;
+            // however, in our example, our root field `store` has an `id` field, and this will cause relay to set `identifyingArgValue` for the store
+            // if (this._rootCallMap.hasOwnProperty(storageKey) && this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) 
+            store: {
+                id: this.props.store.id,  //and hence this is required!
+                counter: this.props.store.counter + 1
             }
+
+            // I'm emphasize it for the 3rd time!
+            //in short, to make optimistic update work, the getOptimisticResponse() must return the SAME data set as the graphQL server does;
+            //this is extremely important in terms of `id` field; otherwise relay gets confused and don't know which record to update
         }
     }
 }

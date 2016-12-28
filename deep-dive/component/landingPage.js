@@ -11,18 +11,23 @@ class LandingPage extends Component {
        this.props.relay.commitUpdate(
        /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
        // if you don't include Person Component's fragment in LandingPage's fragment builder, you get the same warning 
-          new increamentCounter( {mutation_store: this.props.store}) 
+          new increamentCounter( {store:this.props.store}) 
        ) 
     }
 
     render() {
         
         const {store, store: { counter , person}, relay  } = this.props
-        const transactions = relay.getPendingTransactions(store)
         
-        console.log(`insert your break point here...  ${person.name}`)
+        const transactions = relay.getPendingTransactions(store)
+        let  hasPendingTrx = transactions && transactions.length > 0
+        const hasOptimisticUpdate =  relay.hasOptimisticUpdate(store)
+        console.log(` hading pending transaction? ${hasPendingTrx}  --- hasOptimisticUpdate ? ${hasOptimisticUpdate}  ; most of the time , they should be synchronized`)
+
+        
         return (
             <div>
+                {hasPendingTrx && <h2>while waiting for server's response, i'm giving an optimistic update on counter</h2>}
                 <div>counter:{counter}</div>
                 {/* this won't cause issue*/}
                 <h2>person name: {person.name || 'undefined'}</h2> 
@@ -63,7 +68,7 @@ LandingPage = Relay.createContainer(LandingPage, {
         store: () => Relay.QL`
             fragment on Store{
                 counter,
-                ${increamentCounter.getFragment('mutation_store')}
+                ${increamentCounter.getFragment('store')}
                 person{
                     name
                     ${Person.getFragment('person')}
