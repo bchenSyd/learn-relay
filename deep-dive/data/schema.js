@@ -28,6 +28,7 @@ const store = new Store()  //single tone; global instance;
 const status_array = ['any', 'in_progress', 'passed']
 status_array.forEach((s, index) => {
     const person = new Person();
+    person.id=index;
     person.first_name = 'bo_' + index;
     person.last_name = 'chen';
     person.age = 30+ index;
