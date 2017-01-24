@@ -18,7 +18,8 @@ class increamentCounterMutation extends Mutation {
         store: () => Relay.QL`
             fragment on Store{
                 id,
-                counter
+                counter,
+                bchen:id
             }`
     }
 

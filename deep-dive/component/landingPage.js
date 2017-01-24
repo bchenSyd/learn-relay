@@ -7,32 +7,32 @@ import increamentCounter from '../mutation/increamentCounterMutation'
 //the landing page is mapped to viewer/store fo graphql root query
 class LandingPage extends Component {
 
-    _onMutate = event=>{
-       this.props.relay.commitUpdate(
-       /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
-       // if you don't include Person Component's fragment in LandingPage's fragment builder, you get the same warning 
-          new increamentCounter( {store:this.props.store}) 
-       ) 
+    _onMutate = event => {
+        this.props.relay.commitUpdate(
+            /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
+            // if you don't include Person Component's fragment in LandingPage's fragment builder, you get the same warning 
+            new increamentCounter({ store: this.props.store })
+        )
     }
 
     render() {
-        
-        const {store, store: { counter , person}, relay  } = this.props
-        
+
+        const {store, store: { counter, person}, relay  } = this.props
+
         const transactions = relay.getPendingTransactions(store)
-        let  hasPendingTrx = transactions && transactions.length > 0
-        const hasOptimisticUpdate =  relay.hasOptimisticUpdate(store)
+        let hasPendingTrx = transactions && transactions.length > 0
+        const hasOptimisticUpdate = relay.hasOptimisticUpdate(store)
         console.log(` hading pending transaction? ${hasPendingTrx}  --- hasOptimisticUpdate ? ${hasOptimisticUpdate}  ; most of the time , they should be synchronized`)
 
-        
+
         return (
             <div>
                 {hasPendingTrx && <h2>while waiting for server's response, i'm giving an optimistic update on counter</h2>}
                 <div>counter:{counter}</div>
                 {/* this won't cause issue*/}
-                <h2>person name: {person.name || 'undefined'}</h2> 
+                <h2>person name: {person.name || 'undefined'}</h2>
                 {/* this cause a warning: component PersonComponent was rendered with variables that differ from the variables used to fetch fragment person*/}
-                
+
                 {/* Look! here we explicitly pass a fragment property value to child component
                     but we don't have this luxus for the Root React Component as we don't explicitly set property for our Root React Component, 
                     Relay will do that implicitly;
@@ -48,7 +48,7 @@ class LandingPage extends Component {
                     Warning: RelayContainer: Expected prop `person` to be supplied to `PersonComponent`, but got `undefined`. Pass an explicit `null` if this is intentional.
                     Error: cannot access name of undefined
                 */}
-                <Person person = {person}/>
+                <Person person={person} />
                 <button onClick={this._onMutate} >Mutation</button>
 
             </div>
@@ -56,6 +56,12 @@ class LandingPage extends Component {
     }
 }
 
+
+const inLineFragment = Relay.QL`
+        fragment on Person{
+                id
+            }
+`
 //one rootquery can only contains one fragment and no fields. the fragment and root query must share the same name
 //the fragmentReference (returned by Relaycontainer.getFragment) will be replaced with the actual fetched data ONLY IF name matches
 //so if you put fragment name to `store2`, at runtime, the value is `null`
@@ -70,10 +76,10 @@ LandingPage = Relay.createContainer(LandingPage, {
                 counter,
                 ${increamentCounter.getFragment('store')}
                 person{
-                    name
+                    ${inLineFragment}
                     ${Person.getFragment('person')}
                 }
-            }`
+            } `
     }
 })
 export default LandingPage
