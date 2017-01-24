@@ -30,7 +30,7 @@ status_array.forEach((s, index) => {
     const person = new Person();
     person.first_name = 'bo_' + index;
     person.last_name = 'chen';
-    person.age = 34;
+    person.age = 30+ index;
     person.status = s
     person.friends = [2, 3, 4];
     person_db.push(person)
@@ -41,7 +41,9 @@ const getPerson = id => {
 }
 
 const getPersonFromStatus = status => {
-    return person_db.find(p => p.status === status)
+    const result = person_db.find(p => p.status === status)
+    console.log(result)
+    return result
 }
 
 const getStore = () => {
