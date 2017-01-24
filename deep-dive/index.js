@@ -1,12 +1,12 @@
 import React from 'react'
 import { render } from 'react-dom'
 import Relay, { Route } from 'react-relay'
-import LandingPage from './component/landingPage'
+import App from './component/app'
 
 class HomeRoute extends Route {
     static routeName = "MyRelayRoute";
 
-    static paramDefinitions={
+     static paramDefinitions={
         storeId:{ required: true}
     }
     static queries = {
@@ -16,7 +16,7 @@ class HomeRoute extends Route {
         // relay will automatically use the one RootContainer defines becuase it konws the rule 
         // **********************   Queries supplied at the root should contain exactly one fragment and no fields  *********************
         // so it would have the same effect as you would explicitly call component.getFragment('store1')
-        store: () => Relay.QL`query{  store(id: $storeId)  }`   
+        store: () => Relay.QL`query{  store(id: $storeId)  }`
     }
 }
 
@@ -30,8 +30,8 @@ document.body.appendChild(root)
 render(<Relay.Renderer
     environment={Relay.Store}
     forceFetch={false}
-    Container={LandingPage}  /* Relay will attempt to fulfill its data requirements before rendering it. */
-    queryConfig={new HomeRoute({storeId:'688'})}  /* Relay promise to get data ready before render your react component. So root query goes first! */
+    Container={App}  /* Relay will attempt to fulfill its data requirements before rendering it. */
+    queryConfig={new HomeRoute({storeId:`doesn't matter becuase it's singleton`})}  /* Relay promise to get data ready before render your react component. So root query goes first! */
     render={({done, error, props, retry, state}) => {
         if (error) {
             return <h1>failed to execute the root query</h1>
@@ -41,7 +41,7 @@ render(<Relay.Renderer
                 Even though we have access to the data object in renderFetched, the actual data is intentionally opaque. 
                 This prevents the renderFetched from creating an implicit dependency on the fragments declared by Component.
              */
-            return <LandingPage {...props} />
+            return <App {...props} />
         } else {
             return <h1>waiting response for the root query....</h1>
         }

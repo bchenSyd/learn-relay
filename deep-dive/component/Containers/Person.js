@@ -1,23 +1,22 @@
 import React, { Component } from 'react'
 import Relay from 'react-relay'
 
-import Person from './person'
-import increamentCounter from '../mutation/increamentCounterMutation'
+import PersonTemplate from '../Templates/PersonTemplate'
+import increamentCounter from '../../mutation/increamentCounterMutation'
 //When using Relay, a react component should be mapped to a graphQL Type
 //the landing page is mapped to viewer/store fo graphql root query
-class LandingPage extends Component {
+class Person extends Component {
 
     _onMutate = event => {
         this.props.relay.commitUpdate(
             /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
-            // if you don't include Person Component's fragment in LandingPage's fragment builder, you get the same warning 
+            // if you don't include Person Component's fragment in Person's fragment builder, you get the same warning 
             new increamentCounter({ store: this.props.store })
         )
     }
 
 
     onSearch(event) {
-        console.log(event)
         const {relay} = this.props
         relay.setVariables({
             status:  event.target.value
@@ -45,7 +44,7 @@ class LandingPage extends Component {
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
-                <Person person={person} />
+                <PersonTemplate person={person} />
                 <button onClick={this._onMutate} >Mutation</button>
 
             </div>
@@ -61,7 +60,7 @@ const inLineFragment = Relay.QL`
 //one rootquery can only contains one fragment and no fields. the fragment and root query must share the same name
 //the fragmentReference (returned by Relaycontainer.getFragment) will be replaced with the actual fetched data ONLY IF name matches
 //so if you put fragment name to `store2`, at runtime, the value is `null`
-LandingPage = Relay.createContainer(LandingPage, {
+Person = Relay.createContainer(Person, {
     initialVariables:{
         status: 'any'
     },
@@ -77,9 +76,9 @@ LandingPage = Relay.createContainer(LandingPage, {
                 ${increamentCounter.getFragment('store')}
                 person (status: $status ){
                     ${inLineFragment}
-                    ${Person.getFragment('person')}
+                    ${PersonTemplate.getFragment('person')}
                 }
             } `
     }
 })
-export default LandingPage
+export default Person

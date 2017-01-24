@@ -22,6 +22,7 @@ export class Store { }
 //********************************** */
 const person_db = [] //should read from database
 const store = new Store()  //single tone; global instance;
+store.id=1
 //********************************** */
 
 
@@ -150,9 +151,7 @@ const mutationOutputType = new GraphQLObjectType({
         store: {
             type: StoreType,
             resolve: () => {
-                const store = new Store()
-                store.id = 'store_1'
-                return store
+                return getStore()
             }
         }
 
