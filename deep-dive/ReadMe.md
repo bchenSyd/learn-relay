@@ -78,3 +78,6 @@ in the second query, we are trying to cast the node to a `User` object, which is
 }							                    |   }
 
 ```
+
+git push origin HEAD
+    A handy way to push the current branch to the same name on the remote.

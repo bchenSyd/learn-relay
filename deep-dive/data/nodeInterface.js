@@ -3,25 +3,32 @@ import {
     GraphQLNonNull,
     GraphQLID
 } from 'graphql'
+import {
+    fromGlobalId,
+    nodeDefinitions,
+} from 'graphql-relay'
+import { Person, PersonType, Store, StoreType, getPerson, getStore } from './schema'
 
-import { Person, PersonType, Store, StoreType } from './schema'
-const nodeInterface = new GraphQLInterfaceType({
-    name: 'Node',
-    fields: {
-        id: {
-            type: new GraphQLNonNull(GraphQLID)
+
+//******************************************************************************************
+//                     Define Query
+//******************************************************************************************
+// step 1: let's define a node interface and type
+// We need only provide a way for Relay to map 
+// 1. given a global ID, you need to return me the object
+// 2. given an Object , you need to tell me the graphQLType
+const {nodeInterface, nodeField} = nodeDefinitions(
+    (globalId) => {
+        const {type, id} = fromGlobalId(globalId);
+        if (type === 'Person') {  //should match const PersonType = new GraphQLObjectType({  name: 'Person',
+            return getPerson(id);
+        } else if (type === 'Store') {
+            return getStore(id)
+        } else {
+            return null;
         }
     },
-    //if you don't implement resolveType (which is optional), you get:
-    //Error: Interface Type Node (the 'Node' name) does not provide a "resolveType" function and implmenting Type PersonType does not
-    //provide a "isTypeOf" function. there is no way to resovle this implmentation
-
-    /**
-         * Optionally provide a custom type resolver function. If one is not provided,
-         * the default implementation will call `isTypeOf` on each implementing
-         * Object type.
-   */
-    resolveType: (obj) => {
+    (obj) => {
         if (obj instanceof Person) {
             return PersonType
         } else if (obj instanceof Store) {
@@ -29,6 +36,8 @@ const nodeInterface = new GraphQLInterfaceType({
         }
         return null
     }
-})
+)
 
-export default nodeInterface
+
+
+export { nodeInterface, nodeField } 
