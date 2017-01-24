@@ -15,6 +15,15 @@ class LandingPage extends Component {
         )
     }
 
+
+    onSearch(event) {
+        console.log(event)
+        const {relay} = this.props
+        relay.setVariables({
+            status:  event.target.value
+        })
+    }
+
     render() {
 
         const {store, store: { counter, person}, relay  } = this.props
@@ -29,25 +38,13 @@ class LandingPage extends Component {
             <div>
                 {hasPendingTrx && <h2>while waiting for server's response, i'm giving an optimistic update on counter</h2>}
                 <div>counter:{counter}</div>
-                {/* this won't cause issue*/}
-                <h2>person name: {person.name || 'undefined'}</h2>
-                {/* this cause a warning: component PersonComponent was rendered with variables that differ from the variables used to fetch fragment person*/}
-
-                {/* Look! here we explicitly pass a fragment property value to child component
-                    but we don't have this luxus for the Root React Component as we don't explicitly set property for our Root React Component, 
-                    Relay will do that implicitly;
-                    this is because the rootQuery can only have one fragment, and no fields, and that particular fragment must be the fragment declared in React Root Component
-                    so relay knows how to do it;
-                    Based on this, if you fool Relay but literally obeying the rule , i.e. having a query like  Relay.QL`query{store{ ... on Store{ counter, blablabla...}}`
-                    this will successfully bypass Relay query validation system, becuase your rootQuery does only have one (inline) fragment and no fields
-
-                    below commants are wrong. you can specify your Root React Component's property via Relay.Renderer
-
-                    **However** since React Root Container won't have the luxry of setting properties by developer, and that the fragment declared in React Root Component isn't 
-                    referenced in Rect.Route, Relay just simply ignores your fragment property and hence you fragment property will be null
-                    Warning: RelayContainer: Expected prop `person` to be supplied to `PersonComponent`, but got `undefined`. Pass an explicit `null` if this is intentional.
-                    Error: cannot access name of undefined
-                */}
+                <div>
+                    <select name = 'person_filter_dp'  onChange={this.onSearch.bind(this)} >
+                        <option value='any'>Any</option>
+                        <option value='in_progress'>In Progress</option>
+                        <option value='passed'>Passed</option>
+                    </select>
+                </div>
                 <Person person={person} />
                 <button onClick={this._onMutate} >Mutation</button>
 
@@ -59,13 +56,16 @@ class LandingPage extends Component {
 
 const inLineFragment = Relay.QL`
         fragment on Person{
-                id
-            }
-`
+           id
+    }`
 //one rootquery can only contains one fragment and no fields. the fragment and root query must share the same name
 //the fragmentReference (returned by Relaycontainer.getFragment) will be replaced with the actual fetched data ONLY IF name matches
 //so if you put fragment name to `store2`, at runtime, the value is `null`
 LandingPage = Relay.createContainer(LandingPage, {
+    initialVariables:{
+        status: 'any'
+    },
+
     //this is called 'fragment builder'
     fragments: {
         // you can call the fragement whatever you want, but the name you picked here must be 
@@ -75,7 +75,7 @@ LandingPage = Relay.createContainer(LandingPage, {
             fragment on Store{
                 counter,
                 ${increamentCounter.getFragment('store')}
-                person{
+                person (status: $status ){
                     ${inLineFragment}
                     ${Person.getFragment('person')}
                 }

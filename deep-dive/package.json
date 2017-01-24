@@ -7,7 +7,7 @@
     "start-server": "nodemon ./server.js  --exec babel-node",
     "debug-server": "babel-node ./server.js --debug-brk",
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
-    "start-client":"webpack-dev-server --port 3000 --inline",
+    "start-client": "webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",
     "start": "npm-run-all --parallel start-server   start-client"
   },
@@ -36,6 +36,8 @@
     "webpack-dev-server": "^1.16.1"
   },
   "devDependencies": {
+    "@types/react": "^15.0.2",
+    "@types/react-relay": "^0.9.10",
     "babel-cli": "^6.11.4",
     "html-webpack-plugin": "^2.24.1"
   }

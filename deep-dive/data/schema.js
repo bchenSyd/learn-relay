@@ -8,12 +8,33 @@ import {
     GraphQLString,
     GraphQLList
 } from 'graphql'
-
-import nodeInterface from './nodeInterface'
+import {
+    fromGlobalId,
+    globalIdField,
+    nodeDefinitions,
+} from 'graphql-relay'
+import { nodeInterface, nodeField } from './nodeInterface'
 let counter = 10
 
 export class Person { }
 export class Store { }
+
+const getPerson = (databaseId,status) => {
+    const person = new Person();
+    person.id = 1;
+    person.first_name = 'bo';
+    person.last_name = 'chen';
+    person.age = 34;
+    person.status = status
+    person.friends = [2, 3, 4];
+    return person;
+}
+
+const getStore = (databaseId, ) => {
+    const store = new Store()
+    store.id = 'store_1'
+    return store;
+}
 
 //******************************************************************** */
 // the nodeInterface is not an interfaces, but an instance of GraphQLInterfaceType
@@ -23,32 +44,29 @@ export class Store { }
 const PersonType = new GraphQLObjectType({
     name: 'Person',
     fields: () => ({
-        id: {
-            type: new GraphQLNonNull(GraphQLID),
-            description: `must be ID! to be relay-compliant`
-        },
+        id: globalIdField('Game'),
         name: {
             type: GraphQLString,
             resolve: (obj) => `${obj.first_name} ${obj.last_name}`
         },
         age: {
             type: GraphQLInt
+        },
+        status: {
+            type: GraphQLString
         }
     }),
     //GraphQLInterfaceType default to graphqlObjectType::isTypeOf to tell where an object can be converted to graphqlObjectType
     //isTypeOf?: GraphQLIsTypeOfFn<TSource, TContext>;
     interfaces: [nodeInterface]
 })
-//******************************************************************** */
+
 const StoreType = new GraphQLObjectType({
     name: 'Store',
     description: '...',
 
     fields: () => ({
-        id: {
-            type: new GraphQLNonNull(GraphQLID),
-            description: `must be ID! to be relay-compliant`
-        },
+       id: globalIdField('Store'),
         counter: {
             type: GraphQLInt,
             resolve: (root, args, {loader}) => {
@@ -59,16 +77,17 @@ const StoreType = new GraphQLObjectType({
         },
         person: {
             type: PersonType,
+            args: {
+                status: {
+                    type: GraphQLString,
+                    defaultValue: 'any'
+                }
+            },
             resolve: (root, args) =>
-                new Promise((resolve, resject) => {
+                new Promise((resolve, reject) => {
+                    console.log(args)
                     setTimeout(function () {
-                        const person = new Person();
-                        person.id = 1;
-                        person.first_name = 'bo';
-                        person.last_name = 'chen';
-                        person.age = 34;
-                        person.friends = [2, 3, 4];
-                        resolve(person);
+                        resolve(getPerson(-1, args.status));
                     }, 500);
                 })
         }
@@ -78,10 +97,10 @@ const StoreType = new GraphQLObjectType({
 }
 )
 
-
 const QueryType = new GraphQLObjectType({
     name: 'Query',
     fields: () => ({
+        node: nodeField, //this is required for  relay query variables
         store: {
             type: StoreType,
             args: {
@@ -91,15 +110,14 @@ const QueryType = new GraphQLObjectType({
                 debugger;
                 console.log(root)
                 console.log('got a root query.... args = ' + JSON.stringify(args))
-                const store = new Store()
-                store.id = 'store_1'
-                return store
+                return getStore()
             }
         }
     })
 })
 
-
+//************************************************       Mutation        ******************************************************/
+//**********************************************************************************************************************************
 const mutationInputType = new GraphQLInputObjectType({
     name: 'Muation_Input',
     fields: {
@@ -144,11 +162,13 @@ const MutationType = new GraphQLObjectType({
                         clientMutationId: 'mutation_client_id',
                         counter: ++counter,
                     })
-            }, 2*1000)
+                }, 2 * 1000)
             }))
         }
     })
 })
+//**********************************************************************************************************************************
+//**********************************************************************************************************************************
 
 const schema = new GraphQLSchema({
     query: QueryType,
@@ -158,5 +178,7 @@ const schema = new GraphQLSchema({
 export default schema
 export {
     PersonType,
-    StoreType
+    StoreType,
+    getPerson,
+    getStore
 }

@@ -24,14 +24,16 @@ type Person implements Node {
   id: ID!
   name: String
   age: Int
+  status: String
 }
 
 type Query {
+  node(id: ID!): Node
   store(id: String): Store
 }
 
 type Store implements Node {
   id: ID!
   counter: Int
-  person: Person
+  person(status: String = "any"): Person
 }
