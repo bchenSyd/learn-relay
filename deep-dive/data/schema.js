@@ -19,21 +19,33 @@ let counter = 10
 export class Person { }
 export class Store { }
 
-const getPerson = (databaseId,status) => {
+//********************************** */
+const person_db = [] //should read from database
+const store = new Store()  //single tone; global instance;
+//********************************** */
+
+
+const status_array = ['any', 'in_progress', 'passed']
+status_array.forEach((s, index) => {
     const person = new Person();
-    person.id = 1;
-    person.first_name = 'bo';
+    person.first_name = 'bo_' + index;
     person.last_name = 'chen';
     person.age = 34;
-    person.status = status
+    person.status = s
     person.friends = [2, 3, 4];
-    return person;
+    person_db.push(person)
+})
+
+const getPerson = id => {
+    return person_db.find(p => p.id === id)
 }
 
-const getStore = (databaseId, ) => {
-    const store = new Store()
-    store.id = 'store_1'
-    return store;
+const getPersonFromStatus = status => {
+    return person_db.find(p => p.status === status)
+}
+
+const getStore = () => {
+    return store
 }
 
 //******************************************************************** */
@@ -66,11 +78,10 @@ const StoreType = new GraphQLObjectType({
     description: '...',
 
     fields: () => ({
-       id: globalIdField('Store'),
+        id: globalIdField('Store'),
         counter: {
             type: GraphQLInt,
             resolve: (root, args, {loader}) => {
-
                 debugger
                 return counter
             }
@@ -87,7 +98,7 @@ const StoreType = new GraphQLObjectType({
                 new Promise((resolve, reject) => {
                     console.log(args)
                     setTimeout(function () {
-                        resolve(getPerson(-1, args.status));
+                        resolve(getPersonFromStatus(args.status)); // query database
                     }, 500);
                 })
         }
