@@ -19,13 +19,15 @@ class Person extends Component {
     onSearch(event) {
         const {relay} = this.props
         relay.setVariables({
-            status:  event.target.value
+            status: event.target.value
         })
     }
 
     render() {
 
         const {store, store: { counter, person}, relay  } = this.props
+
+        const {variables: {status}, pendingVariables} = this.props.relay
 
         const transactions = relay.getPendingTransactions(store)
         let hasPendingTrx = transactions && transactions.length > 0
@@ -35,10 +37,22 @@ class Person extends Component {
 
         return (
             <div>
-                {hasPendingTrx && <h2>while waiting for server's response, i'm giving an optimistic update on counter</h2>}
+                <ul>
+                    <li>_queuedStore: RelayRecordStore;</li>
+                    <li>_recordStore: RelayRecordStore;</li>
+                    <li style={{color:'grey'}}>_cachedStore: RelayRecordStore;</li>
+                 </ul>
+                {hasPendingTrx && (<h2>
+                    mutation-> send request -> get response ->
+                    storeChange ---> GraphQLStoreChangeEmitter::_processSubscriber -> GraphQLStoreSingleQueryResolver::_handleChange -> RelayContainer._handleFragmentDataUpdate
+                </h2>)}
+                {pendingVariables && 'status' in pendingVariables && (
+                    <h2>RelayContainer.setVariables()=> this.context.relay.environment.primeCache(callback= relayContainer.onReadyStateChange) =>
+                        storeData.getQueryRunner => GraphqlQueryRunner.run => GraphqlQueryRunner.runQueryies => RelayNetworkLayer...</h2>
+                )}
                 <div>counter:{counter}</div>
                 <div>
-                    <select name = 'person_filter_dp'  onChange={this.onSearch.bind(this)} >
+                    <select name='person_filter_dp' value={status} onChange={this.onSearch.bind(this)} >
                         <option value='any'>Any</option>
                         <option value='in_progress'>In Progress</option>
                         <option value='passed'>Passed</option>
@@ -61,7 +75,7 @@ const inLineFragment = Relay.QL`
 //the fragmentReference (returned by Relaycontainer.getFragment) will be replaced with the actual fetched data ONLY IF name matches
 //so if you put fragment name to `store2`, at runtime, the value is `null`
 Person = Relay.createContainer(Person, {
-    initialVariables:{
+    initialVariables: {
         status: 'any'
     },
 

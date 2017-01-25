@@ -103,7 +103,7 @@ const StoreType = new GraphQLObjectType({
                     console.log(args)
                     setTimeout(function () {
                         resolve(getPersonFromStatus(args.status)); // query database
-                    }, 500);
+                    }, 2 * 1000);
                 })
         }
     }
@@ -169,7 +169,6 @@ const MutationType = new GraphQLObjectType({
                 }
             },
             resolve: (root, args) => (new Promise((resolve, reject) => {
-
                 setTimeout(function () {
                     resolve({
                         clientMutationId: 'mutation_client_id',
