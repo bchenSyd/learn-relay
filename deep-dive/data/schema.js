@@ -22,6 +22,7 @@ export class Store { }
 //********************************** */
 const person_db = [] //should read from database
 const store = new Store()  //single tone; global instance;
+store.id=1
 //********************************** */
 
 
@@ -102,7 +103,7 @@ const StoreType = new GraphQLObjectType({
                     console.log(args)
                     setTimeout(function () {
                         resolve(getPersonFromStatus(args.status)); // query database
-                    }, 500);
+                    }, 2 * 1000);
                 })
         }
     }
@@ -150,9 +151,7 @@ const mutationOutputType = new GraphQLObjectType({
         store: {
             type: StoreType,
             resolve: () => {
-                const store = new Store()
-                store.id = 'store_1'
-                return store
+                return getStore()
             }
         }
 
@@ -170,7 +169,6 @@ const MutationType = new GraphQLObjectType({
                 }
             },
             resolve: (root, args) => (new Promise((resolve, reject) => {
-
                 setTimeout(function () {
                     resolve({
                         clientMutationId: 'mutation_client_id',
