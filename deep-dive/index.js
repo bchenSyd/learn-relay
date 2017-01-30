@@ -11,15 +11,19 @@ class HomeRoute extends Route {
     This is also a convenient place to document the set of valid parameters.
     */
     static paramDefinitions= {
-        storeId:{ required: true}  
+        status:{ required: true}  
     }
 
     /*
-    Routes can use prepareParams to provide default parameters, or pass through, convert or suppress passed-in parameters.
+    similiar to prepareVarialbes in RelayContainer;
+    note that 
+    1.     all route params are passed to Component as props
+    2. (!) relay will automatically sync route params with component query variables if they have the same name!
+           this is the inspiration for anil to sync normal props with query variables in Unibet's verison of relay container
     */
     static prepareParams = previousParams => ({
         //do the inital transform; set defualt param ...etc
-        storeId:`doesn't matter becuase it's singleton`
+        status:`passed` //=======================================================================> this will be passed to the Route Component as a prop
     })
     static queries = {
         // if you 
@@ -28,7 +32,7 @@ class HomeRoute extends Route {
         // relay will automatically use the one RootContainer defines becuase it konws the rule 
         // **********************   Queries supplied at the root should contain exactly one fragment and no fields  *********************
         // so it would have the same effect as you would explicitly call component.getFragment('store1')
-        store: () => Relay.QL`query{  store(id: $storeId)  }`
+        store: () => Relay.QL`query{  store }`
     }
 }
 
@@ -43,7 +47,7 @@ render(<Relay.Renderer
     environment={Relay.Store}
     forceFetch={false}
     Container={App}  /* Relay will attempt to fulfill its data requirements before rendering it. */
-    queryConfig={new HomeRoute({storeId:undefined})}  /* Relay promise to get data ready before render your react component. So root query goes first! */
+    queryConfig={new HomeRoute({status:undefined})}  /* Relay promise to get data ready before render your react component. So root query goes first! */
     render={({done, error, props, retry, state}) => {
         if (error) {
             return <h1>failed to execute the root query</h1>

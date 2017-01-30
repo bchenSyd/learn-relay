@@ -8,7 +8,7 @@ import Person from './Person'
 class StoreContainer extends Component {
 
     _onMutate = event => {
-        const {relay} = this.props
+        const {relay, store} = this.props
         relay.commitUpdate(
             /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
             // if you don't include Person Component's fragment in Person's fragment builder, you get the same warning 
@@ -78,7 +78,6 @@ class StoreContainer extends Component {
 
 export default Relay.createContainer(StoreContainer, {
     initialVariables: {
-        storeId: null,
         status: 'any'
     },
     fragments: {
