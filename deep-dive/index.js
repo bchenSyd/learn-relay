@@ -6,9 +6,21 @@ import App from './component/app'
 class HomeRoute extends Route {
     static routeName = "MyRelayRoute";
 
-     static paramDefinitions={
-        storeId:{ required: true}
+    /*
+    Routes can declare a set of parameter names that it requires to be supplied to the constructor. 
+    This is also a convenient place to document the set of valid parameters.
+    */
+    static paramDefinitions= {
+        storeId:{ required: true}  
     }
+
+    /*
+    Routes can use prepareParams to provide default parameters, or pass through, convert or suppress passed-in parameters.
+    */
+    static prepareParams = previousParams => ({
+        //do the inital transform; set defualt param ...etc
+        storeId:`doesn't matter becuase it's singleton`
+    })
     static queries = {
         // if you 
         //          1. don't pass any parameter in below queryconfig, 
@@ -31,7 +43,7 @@ render(<Relay.Renderer
     environment={Relay.Store}
     forceFetch={false}
     Container={App}  /* Relay will attempt to fulfill its data requirements before rendering it. */
-    queryConfig={new HomeRoute({storeId:`doesn't matter becuase it's singleton`})}  /* Relay promise to get data ready before render your react component. So root query goes first! */
+    queryConfig={new HomeRoute({storeId:undefined})}  /* Relay promise to get data ready before render your react component. So root query goes first! */
     render={({done, error, props, retry, state}) => {
         if (error) {
             return <h1>failed to execute the root query</h1>
