@@ -33,7 +33,7 @@ graphQLServer.listen(GRAPHQL_PORT, () => console.log(
 const compiler = webpack({
   debug:true,
   devtool:'source-map',
-  entry: path.resolve(__dirname, 'js', 'app.js'),
+  entry: path.resolve(__dirname, 'js', 'index.js'),
   module: {
     loaders: [
       {

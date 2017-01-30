@@ -1,28 +1,33 @@
-/**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only.  Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 import AddTodoMutation from '../mutations/AddTodoMutation';
 import TodoListFooter from './TodoListFooter';
 import TodoTextInput from './TodoTextInput';
 
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import Relay from 'react-relay';
 
 class TodoApp extends React.Component {
+
+ static contextTypes ={
+   route:PropTypes.object
+ }
+
   _handleTextInputSave = (text) => {
     this.props.relay.commitUpdate(
       new AddTodoMutation({text, viewer: this.props.viewer})
     );
   };
+
+  _active = ()=>{
+    const {history} = this.props
+    
+    history.push({
+      pathname:'/completed',
+      state:{
+        from:'bchen'
+      }
+    })
+  }
+
   render() {
     const hasTodos = this.props.viewer.totalCount > 0;
     return (
@@ -48,20 +53,10 @@ class TodoApp extends React.Component {
               viewer={this.props.viewer}
             />
           }
+
+          <button onClick={ this._active.bind(this)} >Completed Only</button>
         </section>
-        <footer className="info">
-          <p>
-            Double-click to edit a todo
-          </p>
-          <p>
-            Created by the <a href="https://facebook.github.io/relay/">
-              Relay team
-            </a>
-          </p>
-          <p>
-            Part of <a href="http://todomvc.com">TodoMVC</a>
-          </p>
-        </footer>
+       
       </div>
     );
   }

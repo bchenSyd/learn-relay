@@ -9,22 +9,30 @@
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-import 'todomvc-common';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
 import {IndexRoute, Route, Router} from 'react-router';
 import TodoApp from './components/TodoApp';
 import TodoList from './components/TodoList';
-import ViewerQueries from './queries/ViewerQueries';
+
 
 import {createHashHistory} from 'history';
 import {applyRouterMiddleware, useRouterHistory} from 'react-router';
-const history = useRouterHistory(createHashHistory)({ queryKey: false });
+//if you want to use location.state, you must enable queryKey
+//queryKey (?_k=6dzgsd) is the hash key for the location state object
+const history = useRouterHistory(createHashHistory)({ queryKey: true });
+
 const mountNode = document.getElementById('root');
 import useRelay from 'react-router-relay';
+
+const ViewerQueries = {
+  viewer: () => Relay.QL`
+        query { 
+          viewer 
+        }`,
+};
+
 
 ReactDOM.render(
   <Router
@@ -37,11 +45,20 @@ ReactDOM.render(
       <IndexRoute
         component={TodoList}
         queries={ViewerQueries}
-        prepareParams={() => ({status: 'any'})}
+        prepareParams={(params, routerProps) => {
+             //here you can return the default route param
+             return {  status: 'any'}
+        }}
       />
       <Route path=":status"
         component={TodoList}
         queries={ViewerQueries}
+        prepareParams={(params, routerProps) => {
+            //when  history.queryKey is on, you can refer to 
+            //routerProps.location.state, which is an object
+            console.log(routerProps.location.state)
+            return params
+        }}
       />
     </Route>
   </Router>,
