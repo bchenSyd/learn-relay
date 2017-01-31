@@ -17,17 +17,6 @@ class TodoApp extends React.Component {
     );
   };
 
-  _active = ()=>{
-    const {history} = this.props
-    
-    history.push({
-      pathname:'/completed',
-      state:{
-        from:'bchen'
-      }
-    })
-  }
-
   render() {
     const hasTodos = this.props.viewer.totalCount > 0;
     return (
@@ -54,7 +43,7 @@ class TodoApp extends React.Component {
             />
           }
 
-          <button onClick={ this._active.bind(this)} >Completed Only</button>
+ 
         </section>
        
       </div>

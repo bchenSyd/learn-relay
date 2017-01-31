@@ -26,6 +26,7 @@ import { introspectionQuery, printSchema } from 'graphql/utilities';
       JSON.stringify(result.errors, null, 2)
     );
   } else {
+   console.log('************** update schema  ********************')
     fs.writeFileSync(
       path.join(__dirname, '../data/schema.json'),
       JSON.stringify(result, null, 2)

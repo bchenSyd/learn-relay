@@ -12,13 +12,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Relay from 'react-relay';
-import {IndexRoute, Route, Router} from 'react-router';
+import { IndexRoute, Route, Router } from 'react-router';
 import TodoApp from './components/TodoApp';
 import TodoList from './components/TodoList';
+import TodoDetails from './components/TodoDetails'
 
 
-import {createHashHistory} from 'history';
-import {applyRouterMiddleware, useRouterHistory} from 'react-router';
+import { createHashHistory } from 'history';
+import { applyRouterMiddleware, useRouterHistory } from 'react-router';
 //if you want to use location.state, you must enable queryKey
 //queryKey (?_k=6dzgsd) is the hash key for the location state object
 const history = useRouterHistory(createHashHistory)({ queryKey: true });
@@ -29,9 +30,28 @@ import useRelay from 'react-router-relay';
 const ViewerQueries = {
   viewer: () => Relay.QL`
         query { 
-          viewer 
+             viewer 
         }`,
 };
+
+const TodoQueries = {
+  todo: () => Relay.QL`
+        query { 
+             viewer 
+        }`,
+};
+/*
+above code is shor for:
+const TodoQueries = {
+  name_??: (component) => Relay.QL`
+        query { 
+             viewer {
+                ${component.getFragment(name_??)}
+             }
+        }`,
+};
+
+ */
 
 
 ReactDOM.render(
@@ -46,20 +66,26 @@ ReactDOM.render(
         component={TodoList}
         queries={ViewerQueries}
         prepareParams={(params, routerProps) => {
-             //here you can return the default route param
-             return {  status: 'any'}
-        }}
-      />
+          //here you can return the default route param
+          return { status: 'any' }
+        } }
+        />
       <Route path=":status"
         component={TodoList}
         queries={ViewerQueries}
         prepareParams={(params, routerProps) => {
-            //when  history.queryKey is on, you can refer to 
-            //routerProps.location.state, which is an object
-            console.log(routerProps.location.state)
-            return params
+          return params
+        } }
+        />
+      <Route path="/details/:todoId"
+        component={TodoDetails}
+        queries={TodoQueries}
+        prepareParams={(params, routerProps) => {
+          return {
+            todId_variable: parseInt(params.todoId)
+          }
         }}
-      />
+        />
     </Route>
   </Router>,
   mountNode

@@ -56,11 +56,20 @@ export function getTodo(id) {
   return todosById[id];
 }
 
-export function getTodos(status = 'any') {
+export function getTodos(status = 'any' , id) {
+
+  if(id){
+    //admin user can view any todo by id
+    console.log(`********  getTods by id ${id}`)
+    return [todosById[id]]
+  }
+
+
   const todos = todoIdsByUser[VIEWER_ID].map(id => todosById[id]);
   if (status === 'any') {
     return todos;
   }
+
   return todos.filter(todo => todo.complete === (status === 'completed'));
 }
 

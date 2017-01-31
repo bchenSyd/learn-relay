@@ -1,9 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "start": "babel-node ./server.js",
-    "debug": "babel-node --debug-brk ./server.js",
-    "update-schema": "babel-node ./scripts/updateSchema.js"
+    "start-server": "nodemon  ./server.js  --exec babel-node",
+    "debug-server": "babel-node ./server.js --debug-brk",
+    "start-client": "webpack-dev-server --port 3000 --inline  --content-base public",
+    "start": "npm-run-all --parallel start-server start-client"
   },
   "dependencies": {
     "babel-core": "^6.13.2",
@@ -33,6 +34,8 @@
   "devDependencies": {
     "@types/graphql": "^0.8.2",
     "babel-cli": "^6.11.4",
-    "html-webpack-plugin": "^2.24.1"
+    "html-webpack-plugin": "^2.24.1",
+    "nodemon": "^1.11.0",
+    "npm-run-all": "^4.0.1"
   }
 }

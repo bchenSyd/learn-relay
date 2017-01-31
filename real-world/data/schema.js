@@ -111,6 +111,14 @@ const GraphQLTodo = new GraphQLObjectType({
       type: GraphQLBoolean,
       resolve: (obj) => obj.complete,
     },
+    summary: {
+      type: GraphQLString,
+      resolve: obj => obj.text + '__summary'
+    },
+    details: {
+      type: GraphQLString,
+      resolve: obj => obj.text + '__details'
+    }
   },
   interfaces: [nodeInterface],
 });
@@ -121,14 +129,14 @@ const {
 } = connectionDefinitions({  // same as GraphQLList(GraphQLTodo), just wrap the list in `edges`
   name: 'Todo',
   nodeType: GraphQLTodo,
-  connectionFields:()=>({
+  connectionFields: () => ({
     // a connection type by default has 'edges' and 'pageInfo' fields
     // now we are adding the third one, which is a custom one;
-    totalCount:{
+    totalCount: {
       type: GraphQLInt,
-      description:' a custom connection field. will be defined at connectionType level',
-      resolve:(connection)=>{
-          return connection.edges.length;
+      description: ' a custom connection field. will be defined at connectionType level',
+      resolve: (connection) => {
+        return connection.edges.length;
       }
     }
   })
@@ -148,13 +156,19 @@ const GraphQLUser = new GraphQLObjectType({
           type: GraphQLString,
           defaultValue: 'any',
         },
-        ...connectionArgs,
+        id:{
+            type: GraphQLInt
+        },
+        ...connectionArgs,  //todos(after: 1, first: 2, before: 3, last: 4) {...}
       },
       ///**************************************************************************************/
-      resolve: (_, {status, ...args}) =>
-        connectionFromArray(getTodos(status), args),
-      // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
-
+       // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
+      resolve: (_, {status, id, ...args}) =>
+        {
+          const result = getTodos(status, id)
+          console.log(`getTodos for status:${status} and id:${id||'undefined'} retuns ${JSON.stringify(result)}`)
+          return connectionFromArray( result, args)
+        }
     },
     totalCount: {
       type: GraphQLInt,
@@ -178,6 +192,8 @@ const Root = new GraphQLObjectType({
     node: nodeField,
   },
 });
+
+//****************************************   MUTATION   ************************************************************************** */
 
 const GraphQLAddTodoMutation = mutationWithClientMutationId({
   name: 'AddTodo',
@@ -322,6 +338,7 @@ const Mutation = new GraphQLObjectType({
     renameTodo: GraphQLRenameTodoMutation,
   },
 });
+
 
 export const schema = new GraphQLSchema({
   query: Root,
