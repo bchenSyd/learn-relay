@@ -103,10 +103,16 @@ const GraphQLTodo = new GraphQLObjectType({
   fields: {
     id: globalIdField('Todo'),
 
+    origId:{
+      type:GraphQLInt,
+      resolve:(obj)=>obj.id
+    },
+
     text: {
       type: GraphQLString,
       resolve: (obj) => obj.text,
     },
+    
     complete: {
       type: GraphQLBoolean,
       resolve: (obj) => obj.complete,
@@ -166,7 +172,7 @@ const GraphQLUser = new GraphQLObjectType({
       resolve: (_, {status, id, ...args}) =>
         {
           const result = getTodos(status, id)
-          console.log(`getTodos for status:${status} and id:${id||'undefined'} retuns ${JSON.stringify(result)}`)
+          //console.log(`getTodos for status:${status} and id:${id||'undefined'} retuns ${JSON.stringify(result)}`)
           return connectionFromArray( result, args)
         }
     },

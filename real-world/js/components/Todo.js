@@ -1,15 +1,3 @@
-/**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only.  Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 import ChangeTodoStatusMutation from '../mutations/ChangeTodoStatusMutation';
 import RemoveTodoMutation from '../mutations/RemoveTodoMutation';
 import RenameTodoMutation from '../mutations/RenameTodoMutation';
@@ -18,6 +6,7 @@ import TodoTextInput from './TodoTextInput';
 import React from 'react';
 import Relay from 'react-relay';
 import classnames from 'classnames';
+import { Link } from 'react-router'
 
 class Todo extends React.Component {
   state = {
@@ -52,16 +41,16 @@ class Todo extends React.Component {
   _handleTextInputSave = (text) => {
     this._setEditMode(false);
     this.props.relay.commitUpdate(
-      new RenameTodoMutation({todo: this.props.todo, text})
+      new RenameTodoMutation({ todo: this.props.todo, text })
     );
   };
   _removeTodo() {
     this.props.relay.commitUpdate(
-      new RemoveTodoMutation({todo: this.props.todo, viewer: this.props.viewer})
+      new RemoveTodoMutation({ todo: this.props.todo, viewer: this.props.viewer })
     );
   }
   _setEditMode = (shouldEdit) => {
-    this.setState({isEditing: shouldEdit});
+    this.setState({ isEditing: shouldEdit });
   };
   renderTextInput() {
     return (
@@ -72,10 +61,11 @@ class Todo extends React.Component {
         onCancel={this._handleTextInputCancel}
         onDelete={this._handleTextInputDelete}
         onSave={this._handleTextInputSave}
-      />
+        />
     );
   }
   render() {
+    const {  origId, text} = this.props.todo
     return (
       <li
         className={classnames({
@@ -88,14 +78,17 @@ class Todo extends React.Component {
             className="toggle"
             onChange={this._handleCompleteChange}
             type="checkbox"
-          />
-          <label onDoubleClick={this._handleLabelDoubleClick}>
-            {this.props.todo.text}
-          </label>
+            />
+          <Link to={`/details/${origId}`} > 
+            <label onDoubleClick={this._handleLabelDoubleClick}>
+                  {text}
+            </label>
+          </Link>
+
           <button
             className="destroy"
             onClick={this._handleDestroyClick}
-          >remove</button>
+            >remove</button>
         </div>
         {this.state.isEditing && this.renderTextInput()}
       </li>
@@ -109,6 +102,7 @@ export default Relay.createContainer(Todo, {
       fragment on Todo {
         complete,
         id,
+        origId,
         text,
         ${ChangeTodoStatusMutation.getFragment('todo')},
         ${RemoveTodoMutation.getFragment('todo')},

@@ -1,14 +1,20 @@
 import React from 'react';
-import Relay, {createContainer} from 'react-relay'
-
+import Relay, { createContainer } from 'react-relay'
+import {Link} from 'react-router'
 
 const TodoDetails = props => {
+    
+    const {todo: {
+            todos: {
+                edges
+            }
+        }
+    } = props
 
-    const {todo} = props
-    console.log(todo)
-    const {id, text, details} = todo
+    const {node:{id, text, details}} = edges[0]
     return (
         <div>
+            <Link to={`/`} >Home</Link>
             <h1>details for {id}</h1>
             <ul>
                 <li>text : {text}</li>
@@ -19,16 +25,16 @@ const TodoDetails = props => {
     );
 };
 
-export default  createContainer(TodoDetails,{
+export default createContainer(TodoDetails, {
     initialVariables: {
         todId_variable: null,
-  },
+    },
 
-  prepareVariables(prevVariables) {
-      return {...prevVariables}
-  },
-    fragments:{
-        todo: ()=> Relay.QL`
+    prepareVariables(prevVariables) {
+        return { ...prevVariables }
+    },
+    fragments: {
+        todo: () => Relay.QL`
             fragment on User{
                todos( id:$todId_variable , first: 1){
                    edges{
