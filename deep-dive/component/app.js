@@ -21,7 +21,7 @@ let App = (props) => {
                 you need to pass relay here, or  simply do {...props} 
                 2. you must forward status={props.status} to <Store> component
                    becuase you have  ${Store.getFragment('store', variables)} which override Store's default variables
-
+                //source code see: D:\__work\relay-digest\container\RelayContainer.ts line:540
            */}
             <Store  store={props.store}    relay={props.relay}  status={props.status}/>
         </div>
