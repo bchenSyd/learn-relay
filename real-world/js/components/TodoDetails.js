@@ -33,6 +33,7 @@ export default createContainer(TodoDetails, {
     prepareVariables(prevVariables) {
         return { ...prevVariables }
     },
+    
     fragments: {
         todo: () => Relay.QL`
             fragment on User{
