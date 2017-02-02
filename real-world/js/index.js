@@ -81,8 +81,13 @@ ReactDOM.render(
         component={TodoDetails}
         queries={TodoQueries}
         prepareParams={(params, routerProps) => {
+          //auto sync
+          //the route params returns here will 
+          //1. become props to the component
+          //2. if there is a relay query variables that has same property name, 
+          //   the initial vaue of that vairable will be set from route param
           return {
-            todId_variable: parseInt(params.todoId)
+               todId_variable: parseInt(params.todoId)
           }
         }}
         />

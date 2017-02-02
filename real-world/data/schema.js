@@ -69,7 +69,10 @@ import {
 const {nodeInterface, nodeField} = nodeDefinitions(
   // idFetcher
   (globalId) => {
-    const {type, id} = fromGlobalId(globalId);
+    //standard way:
+    //const {type, id} = fromGlobalId(globalId);
+    //unibet way:
+    const [type, id]= globalId.split(':')
 
     console.log(`get node from node id#${type + ':' + id}`)
 
@@ -87,7 +90,7 @@ const {nodeInterface, nodeField} = nodeDefinitions(
   // { node (id:"VmlkZW86Yg=="){ id, __typename, ... on Todo{ text, complete}}}
   (obj) => {
     if (obj instanceof Todo) {
-      return GraphQLTodo;
+      return GraphQLTodo;{{}}
     } else if (obj instanceof User) {
       return GraphQLUser;
     }
@@ -101,18 +104,24 @@ const GraphQLTodo = new GraphQLObjectType({
 
 
   fields: {
-    id: globalIdField('Todo'),
+    //standard way:
+    //id: globalIdField('Todo'),
+    //unibet way:
+    id: {
+      type: new GraphQLNonNull(GraphQLID),   //note: you MUST use  GraphQLID, not ANYTHINGELSE!
+      resolve: obj => 'Todo:' + obj.id
+    },
 
-    origId:{
-      type:GraphQLInt,
-      resolve:(obj)=>obj.id
+    origId: {
+      type: GraphQLInt,
+      resolve: (obj) => obj.id
     },
 
     text: {
       type: GraphQLString,
       resolve: (obj) => obj.text,
     },
-    
+
     complete: {
       type: GraphQLBoolean,
       resolve: (obj) => obj.complete,
@@ -151,7 +160,14 @@ const {
 const GraphQLUser = new GraphQLObjectType({
   name: 'User',
   fields: {
-    id: globalIdField('User'),
+    //standard way:
+    // id: globalIdField('User'),
+    //unibet way:
+    id: {
+      type: new GraphQLNonNull(GraphQLID),
+      resolve: obj => 'User:' + obj.id
+    },
+   
     todos: {
       type: TodosConnection,
       ///**************************************************************************************/
@@ -162,19 +178,18 @@ const GraphQLUser = new GraphQLObjectType({
           type: GraphQLString,
           defaultValue: 'any',
         },
-        id:{
-            type: GraphQLInt
+        id: {
+          type: GraphQLInt
         },
         ...connectionArgs,  //todos(after: 1, first: 2, before: 3, last: 4) {...}
       },
       ///**************************************************************************************/
-       // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
-      resolve: (_, {status, id, ...args}) =>
-        {
-          const result = getTodos(status, id)
-          //console.log(`getTodos for status:${status} and id:${id||'undefined'} retuns ${JSON.stringify(result)}`)
-          return connectionFromArray( result, args)
-        }
+      // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
+      resolve: (_, {status, id, ...args}) => {
+        const result = getTodos(status, id)
+        //console.log(`getTodos for status:${status} and id:${id||'undefined'} retuns ${JSON.stringify(result)}`)
+        return connectionFromArray(result, args)
+      }
     },
     totalCount: {
       type: GraphQLInt,

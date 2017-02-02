@@ -24,7 +24,7 @@ class TodoApp extends React.Component {
         <section className="todoapp">
           <header className="header">
             <h1>
-              todos
+              App Header -- defined in {'<App>'}
             </h1>
             <TodoTextInput
               autoFocus={true}
