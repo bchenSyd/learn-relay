@@ -6,14 +6,13 @@
             "type": "node2",
             "request": "launch", //executed per `F5`
             "name": "Launch Program",
-            "cwd": "${workspaceRoot}",
-            "program": "${workspaceRoot}\\node_modules\\babel-cli\\bin\\babel-node.js",
+            "program": "${workspaceRoot}/node_modules/babel-cli/bin/babel-node.js",
             "stopOnEntry": true,
             "sourceMaps": true,
             "args": [
-                "${workspaceRoot}/server.js",
-                "--source-maps"
-            ]
+                "${workspaceRoot}/server.js"
+            ],
+             "port": 9229
         },
         {
             "type": "node2",  //must be `node2` for chrome debugger protocal ; `node` for v8 deubgging
