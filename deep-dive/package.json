@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start-server": "nodemon ./server.js  --exec babel-node",
-    "debug-server": "babel-node ./server.js --source-maps --debug-brk",
+    "debug-server": "babel-node ./server.js --source-maps --debug-brk --inspect",
+    "debug-server-v2":"node  ./node_modules/babel-cli/bin/babel-node.js  ./server.js --debug",
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
     "start-client": "webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",

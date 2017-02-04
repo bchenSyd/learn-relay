@@ -1,27 +1,25 @@
 {
-    // Use IntelliSense to learn about possible Node.js debug attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    // when you press F5, vs code first run `launch`, then run `attach`
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node",
-            "request": "launch",
+            "type": "node2",
+            "request": "launch", //executed per `F5`
             "name": "Launch Program",
-            //the problem with this approach is that debug point won't picked by the node process
-            //becuause we are executing babel-node.js and it doesn't forward breakpoints to node
+            "cwd": "${workspaceRoot}",
             "program": "${workspaceRoot}/node_modules/babel-cli/bin/babel-node.js",
-            "stopOnEntry": false,
+            "stopOnEntry": true,
+            "sourceMaps": true,
             "args": [
-                "${workspaceRoot}/server.js"
-            ],
-            "cwd": "${workspaceRoot}"
+                "${workspaceRoot}/server.js",
+                "--inspect"
+            ]
         },
         {
-            "type": "node",
+            "type": "node2",  //must be `node2` for chrome debugger protocal ; `node` for v8 deubgging
             "request": "attach",
             "name": "Attach to Process",
-            "port": 5858
+            "port": 9229
         }
     ]
 }
