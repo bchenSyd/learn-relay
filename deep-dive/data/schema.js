@@ -122,7 +122,7 @@ const QueryType = new GraphQLObjectType({
                 id: { type: GraphQLString }
             },
             resolve: (root, args, {loaders}) => {
-                debugger;
+                //debugger; //you don't have to set break point this way with Chrome debugger protocal (node2)
                 console.log(root)
                 console.log('got a root query.... args = ' + JSON.stringify(args))
                 return getStore()
