@@ -60,7 +60,11 @@ const getStore = () => {
 const PersonType = new GraphQLObjectType({
     name: 'Person',
     fields: () => ({
-        id: globalIdField('Game'),
+        //id: globalIdField('Game'),
+        id:{
+            type:new GraphQLNonNull(GraphQLID),
+            resolve:obj=>'Person:'+obj.id
+        },
         name: {
             type: GraphQLString,
             resolve: (obj) => `${obj.first_name} ${obj.last_name}`
@@ -82,7 +86,11 @@ const StoreType = new GraphQLObjectType({
     description: '...',
 
     fields: () => ({
-        id: globalIdField('Store'),
+        //id: globalIdField('Store'),
+        id:{
+            type:new GraphQLNonNull(GraphQLID),
+            resolve:obj=>`Store:${obj.id}`
+        },
         counter: {
             type: GraphQLInt,
             resolve: (root, args, {loader}) => {
