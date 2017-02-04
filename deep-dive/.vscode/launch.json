@@ -1,5 +1,5 @@
 {
-    // when you press F5, vs code first run `launch`, then run `attach`
+    // when you press F5, vs code first run `launch`, then run `attach` so make sure they use the same port number
     "version": "0.2.0",
     "configurations": [
         {
