@@ -65,8 +65,17 @@ ReactDOM.render(
       <IndexRoute
         component={TodoList}
         queries={ViewerQueries}
-        render={(props)=>{
-            return 
+        render={  ({props, done, error, state})=>{
+            if(error){
+              return <h1> error</h1>
+            }else if(props){
+                console.log('display....')
+              return  <TodoList {...props} />
+            }else{
+               console.log('loading....')
+              return <h1 style={{color:'red'}}>loading...</h1>
+            }
+            
         }}
         prepareParams={(params, routerProps) => {
           //here you can return the default route param
@@ -79,6 +88,17 @@ ReactDOM.render(
         prepareParams={(params, routerProps) => {
           return params
         } }
+         render={  ({props, done, error, state})=>{
+            if(error){
+              return <h1> error</h1>
+            }else if(props){
+              return  <TodoList {...props} />
+            }else{
+               console.log('loading....')
+               return <h1 style={{color:'red'}}>loading...</h1>
+            }
+            
+        }}
         />
       <Route path="/details/:todoId"
         component={TodoDetails}

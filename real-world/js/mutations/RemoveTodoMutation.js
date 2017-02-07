@@ -1,18 +1,8 @@
-/**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only.  Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 import Relay from 'react-relay';
 
 export default class RemoveTodoMutation extends Relay.Mutation {
+  //Mutation's fragment builder; all the properies defined within spec will be availble as __fragment__ from 
+  //mustation's props
   static fragments = {
     // TODO: Mark complete as optional
     todo: () => Relay.QL`
@@ -30,9 +20,11 @@ export default class RemoveTodoMutation extends Relay.Mutation {
       }
     `,
   };
+  //get server mutation defination
   getMutation() {
     return Relay.QL`mutation{removeTodo}`;
   }
+  //to be intersected with tracked queries (per node)
   getFatQuery() {
     return Relay.QL`
       fragment on RemoveTodoPayload @relay(pattern: true) {
@@ -44,6 +36,8 @@ export default class RemoveTodoMutation extends Relay.Mutation {
       }
     `;
   }
+
+  //what do you do once mutation returns?
   getConfigs() {
     return [{
       type: 'NODE_DELETE',
@@ -53,11 +47,14 @@ export default class RemoveTodoMutation extends Relay.Mutation {
       deletedIDFieldName: 'deletedTodoId',
     }];
   }
+  //prepare data for server mutation inputFields
   getVariables() {
     return {
       id: this.props.todo.id,
     };
   }
+
+  //you must returns **exactly** the same format as server does
   getOptimisticResponse() {
     const viewerPayload = {id: this.props.viewer.id};
     if (this.props.viewer.completedCount != null) {
