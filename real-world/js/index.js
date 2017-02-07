@@ -35,7 +35,7 @@ const ViewerQueries = {
 };
 
 const TodoQueries = {
-  todo: () => Relay.QL`
+  viewer: () => Relay.QL`
         query { 
              viewer 
         }`,
@@ -65,6 +65,9 @@ ReactDOM.render(
       <IndexRoute
         component={TodoList}
         queries={ViewerQueries}
+        render={(props)=>{
+            return 
+        }}
         prepareParams={(params, routerProps) => {
           //here you can return the default route param
           return { status: 'any' }

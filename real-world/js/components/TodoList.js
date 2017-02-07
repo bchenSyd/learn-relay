@@ -31,7 +31,6 @@ class TodoList extends React.Component {
     const numCompletedTodos = this.props.viewer.completedCount;
     return (
       <section className="main">
-           <Link to={`/details/1`} >see details</Link>
         <input
           checked={numTodos === numCompletedTodos}
           className="toggle-all"

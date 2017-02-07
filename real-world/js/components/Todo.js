@@ -79,11 +79,12 @@ class Todo extends React.Component {
             onChange={this._handleCompleteChange}
             type="checkbox"
             />
-          <Link to={`/details/${origId}`} > 
-            <label onDoubleClick={this._handleLabelDoubleClick}>
-                  {text}
-            </label>
-          </Link>
+            <Link to={`/details/${origId}`} > 
+              <label onDoubleClick={this._handleLabelDoubleClick}
+                    style={{cursor:'pointer'}}>
+                    {text}
+              </label>
+            </Link>
 
           <button
             className="destroy"
