@@ -19,7 +19,8 @@ import { Person, PersonType, Store, StoreType, getPerson, getStore } from './sch
 // 2. given an Object , you need to tell me the graphQLType
 const {nodeInterface, nodeField} = nodeDefinitions(
     (globalId) => {
-        const {type, id} = fromGlobalId(globalId);
+        //const {type, id} = fromGlobalId(globalId);
+        const [type,id] = globalId.split(':')
         if (type === 'Person') {  //should match const PersonType = new GraphQLObjectType({  name: 'Person',
             return getPerson(id);
         } else if (type === 'Store') {

@@ -1,3 +1,28 @@
+
+#launch from vs code 
+```
+node --inspect=9229 --debug-brk babel-node.js d:\__work\learn-relay\real-world/server.js 
+Debugger listening on port 9229.
+Warning: This is an experimental feature and could change at any time.
+d:\__work\learn-relay\real-world\node_modules\babel-core\lib\transformation\file\options\option-manager.js:327
+        throw e;
+        ^
+
+Error: Options {"loose":true} passed to d:\__work\learn-relay\real-world\node_modules\babel-preset-es2015\lib\index.js which does not accept options. (While processing preset: "d:\\__work\\learn-relay\\real-world\\node_modules\\babel-preset-es2015\\lib\\index.js") (While processing preset: "d:\\__work\\learn-relay\\real-world\\node_modules\\babel-preset-es2015\\lib\\index.js") (While processing preset: "d:\\__work\\learn-relay\\real-world\\node_modules\\babel-preset-react\\lib\\index.js")
+    at d:\__work\learn-relay\real-world\node_modules\babel-core\lib\transformation\file\options\option-manager.js:313:17
+    at Array.map (native)
+    at OptionManager.resolvePresets (d:\__work\learn-relay\real-world\node_modules\babel-core\lib\transformation\file\options\option-manager.js:274:20)
+    at OptionManager.mergePresets (d:\__work\learn-relay\real-world\node_modules\babel-core\lib\transformation\file\options\option-manager.js:263:10)
+    at OptionManager.mergeOptions (d:\__work\learn-relay\real-world\node_modules\babel-core\lib\transformation\file\options\option-manager.js:248:14)
+    at OptionManager.init (d:\__work\learn-relay\real-world\node_modules\babel-core\lib\transformation\file\options\option-manager.js:367:12)
+    at compile (d:\__work\learn-relay\real-world\node_modules\babel-register\lib\node.js:103:45)
+    at loader (d:\__work\learn-relay\real-world\node_modules\babel-register\lib\node.js:144:14)
+    at Object.require.extensions.(anonymous function) [as .js] (d:\__work\learn-relay\real-world\node_modules\babel-register\lib\node.js:154:7)
+    at Module.load (module.js:487:32)
+Debugger attached.
+Waiting for the debugger to disconnect...
+```
+
 1. `babel-relay-plugin` transpiles graphql queries into IIFE expression. 
 The IIFE returns a query descriptor which can be executed under ES5 syntax
 Relay.QL`
