@@ -64,6 +64,7 @@ class increamentCounterMutation extends Mutation {
             // the root field (store, viewer, game) normally doesn't have `id` field since it's unique in a graphql query;
             // however, in our example, our root field `store` has an `id` field, and this will cause relay to set `identifyingArgValue` for the store
             // if (this._rootCallMap.hasOwnProperty(storageKey) && this._rootCallMap[storageKey].hasOwnProperty(identifyingArgValue)) 
+            // see: E:\relay-digest\traversal\writeRelayUpdatePayload.js line:178
             store: {
                 id: this.props.store.id,  //and hence this is required!
                 counter: this.props.store.counter + 1
