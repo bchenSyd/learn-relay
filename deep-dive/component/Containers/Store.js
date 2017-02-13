@@ -7,11 +7,21 @@ import Person from './Person'
 
 class StoreContainer extends Component {
 
-    componentWillMount() {
-        const {store: {country_code}, relay } = this.props
+    fetchMeetingDropdown(relay, nextProps) {
+        const {store:{country_code}, relay:{variables:{parentVal}}} = nextProps
         relay.setVariables({
-            country_code:country_code 
+            country_code: country_code,
+            parentVal:parentVal
         })
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const {relay: {variables}} = this.props
+        const {relay, relay: {variables: nextVariables}} = nextProps
+        if (!variables.parentVal && nextVariables.parentVal) {
+            //first time parentVal gets resolved
+            this.fetchMeetingDropdown(relay, nextProps)
+        }
     }
 
 
@@ -67,7 +77,7 @@ class StoreContainer extends Component {
         const { store, store: { counter, meetingDropDown, person}, relay } = this.props
         const {variables, variables: {status}, pendingVariables} = relay
 
-       
+
         console.log(`                render()  varialbes:${JSON.stringify(variables)}   --- pendingVariables ${JSON.stringify(pendingVariables)}`)
         return (<div>
             <div style={{ marginTop: 40 }}>
@@ -88,7 +98,7 @@ class StoreContainer extends Component {
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
-                {meetingDropDown && <div style={{color:'red'}}>{meetingDropDown}</div>}
+                {meetingDropDown && <div style={{ color: 'red' }}>{meetingDropDown}</div>}
                 {/* display person*/}
                 {person && <Person person={person} />}
             </div>
@@ -102,29 +112,29 @@ export default Relay.createContainer(StoreContainer, {
         parentVal: null, //relay doesn't like undefined; use null instead!
         shouldFetchPerson: false, // dependent query controlled by parent
         country_code: null,
-        shouldFetchMeetings:false //dependent query controlled by self
+        shouldFetchMeetings: false //dependent query controlled by self
     },
-        //1. run rootquery
-        //2. rootQuery returns. RelayContainer(Parent)._getQueryData() 
-        //3. parent  cwm begins, explicitly setVariables
-        //4. RelayContainer(Store), _initialize, build nextVariables
-        //5. Store  cwm begins, explicitly setVarialbes
-        //   Store::render() is called here with **all** default variables
-        //   Store::render() is called once step 5 is resolved with updated varialbes....
-        //7. parent cwm query returns, RelayContainer(Store).componentWillReceiveprops => setstate(oldstate) { this._initialize(newVarialbes, oldVariables)}
-        //   Store::render() is called with updated varialbes (which override the country_code)
-        /*
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":11}
-        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}   --- pendingVariables null
-        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":11}   --- pendingVariables null
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}
-        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}   --- pendingVariables null
-        
-         */
+    //1. run rootquery
+    //2. rootQuery returns. RelayContainer(Parent)._getQueryData() 
+    //3. parent  cwm begins, explicitly setVariables
+    //4. RelayContainer(Store), _initialize, build nextVariables
+    //5. Store  cwm begins, explicitly setVarialbes
+    //   Store::render() is called here with **all** default variables
+    //   Store::render() is called once step 5 is resolved with updated varialbes....
+    //7. parent cwm query returns, RelayContainer(Store).componentWillReceiveprops => setstate(oldstate) { this._initialize(newVarialbes, oldVariables)}
+    //   Store::render() is called with updated varialbes (which override the country_code)
+    /*
+    Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
+    Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
+    Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}
+    Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
+    Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":11}
+    Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}   --- pendingVariables null
+    Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":11}   --- pendingVariables null
+    Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}
+    Store.js:71                 render()  varialbes:{"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}   --- pendingVariables null
+    
+     */
     prepareVariables: prevVars => {
         const newVars = Object.assign({}, prevVars, {
             shouldFetchMeetings: !!prevVars.country_code,
