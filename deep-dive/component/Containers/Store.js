@@ -138,8 +138,9 @@ export default Relay.createContainer(StoreContainer, {
         fragment on Store {
             counter,
 
-
-           
+             #*************************************************************************************************************
+             #depends on which dependent query comes first; the one comes latter will flush out the one comes first
+             # meeting: 0.5s , person 2s; so you will only see person info now
              #simulate meeting dropdown where data is fetched based on $race_type, $country_code and $race_date
              country_code,
              meetingDropDown(country_code:$country_code) @include(if: $shouldFetchMeetings),
@@ -149,7 +150,7 @@ export default Relay.createContainer(StoreContainer, {
              person (status: $status, dummy:$parentVal ) @include(if: $shouldFetchPerson){
                    ${Person.getFragment('person')}
              },
-
+             #**************************************************************************************************************
             #mutation area
             ${increamentCounter.getFragment('store')}
         }`

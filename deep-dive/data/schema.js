@@ -22,17 +22,17 @@ export class Store { }
 //********************************** */
 const person_db = [] //should read from database
 const store = new Store()  //single tone; global instance;
-store.id=1
+store.id = 1
 //********************************** */
 
 
 const status_array = ['any', 'in_progress', 'passed']
 status_array.forEach((s, index) => {
     const person = new Person();
-    person.id=index;
+    person.id = index;
     person.first_name = 'bo_' + index;
     person.last_name = 'chen';
-    person.age = 30+ index;
+    person.age = 30 + index;
     person.status = s
     person.friends = [2, 3, 4];
     person_db.push(person)
@@ -61,9 +61,9 @@ const PersonType = new GraphQLObjectType({
     name: 'Person',
     fields: () => ({
         //id: globalIdField('Game'),
-        id:{
-            type:new GraphQLNonNull(GraphQLID),
-            resolve:obj=>'Person:'+obj.id
+        id: {
+            type: new GraphQLNonNull(GraphQLID),
+            resolve: obj => 'Person:' + obj.id
         },
         name: {
             type: GraphQLString,
@@ -87,9 +87,9 @@ const StoreType = new GraphQLObjectType({
 
     fields: () => ({
         //id: globalIdField('Store'),
-        id:{
-            type:new GraphQLNonNull(GraphQLID),
-            resolve:obj=>`Store:${obj.id}`
+        id: {
+            type: new GraphQLNonNull(GraphQLID),
+            resolve: obj => `Store:${obj.id}`
         },
         counter: {
             type: GraphQLInt,
@@ -98,22 +98,26 @@ const StoreType = new GraphQLObjectType({
             }
         },
         //you must query current Store to get the country_code
-        country_code:{
-            type:GraphQLString,
-            resolve:()=>'cn'
+        country_code: {
+            type: GraphQLString,
+            resolve: () => 'cn'
         },
         //meeting dropdown needs country_code as parameter, which is only available after the root query
         //this makes meetingDropDown a dependent field (MUST be deferred)
-        meetingDropDown:{
-            type:GraphQLString,
-            args:{
-                country_code:{
-                    type:GraphQLString,
-                    defaultValue:'au'
+        meetingDropDown: {
+            type: GraphQLString,
+            args: {
+                country_code: {
+                    type: GraphQLString,
+                    defaultValue: 'au'
                 }
             },
-            resolve:(_,args)=>{
-                return `dependent meeting dropdown data based on country_code ${args.country_code}....`
+            resolve: (_, args) => {
+                return new Promise(res => {
+                    setTimeout(function () {
+                        res(`dependent meeting dropdown data based on country_code ${args.country_code}....`)
+                    }, 0.5 * 1000);
+                })
             }
         },
         person: {
@@ -123,9 +127,9 @@ const StoreType = new GraphQLObjectType({
                     type: GraphQLString,
                     defaultValue: 'any'
                 },
-                dummy:{
-                    type:GraphQLString,
-                    defaultValue:'default'
+                dummy: {
+                    type: GraphQLString,
+                    defaultValue: 'default'
                 }
             },
             resolve: (root, args) =>
