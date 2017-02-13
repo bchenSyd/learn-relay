@@ -20,7 +20,7 @@ class StoreContainer extends Component {
         const {relay, relay: {variables: nextVariables}} = nextProps
         if (!variables.parentVal && nextVariables.parentVal) {
             //first time parentVal gets resolved
-            this.fetchMeetingDropdown(relay, nextProps)
+            this.fetchMeetingDropdown(relay, nextProps) //you can pass either this.props.relay or nextProps.relay; both works
         }
     }
 
