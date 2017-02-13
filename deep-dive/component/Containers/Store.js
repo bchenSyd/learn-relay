@@ -8,9 +8,9 @@ import Person from './Person'
 class StoreContainer extends Component {
 
     componentWillMount() {
-        const {store: {counter}, relay } = this.props
+        const {store: {country_code}, relay } = this.props
         relay.setVariables({
-            ownVar: counter
+            country_code:country_code 
         })
     }
 
@@ -64,7 +64,7 @@ class StoreContainer extends Component {
             1.2. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes  (unnecessarily) why??
         2. ready == true,  variables = new variables ,     pendingVarialbes = null (NETWORK_RECEIVED_ALL)
          */
-        const { store, store: { counter, person}, relay } = this.props
+        const { store, store: { counter, meetingDropDown, person}, relay } = this.props
         const {variables, variables: {status}, pendingVariables} = relay
 
        
@@ -88,6 +88,7 @@ class StoreContainer extends Component {
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
+                {meetingDropDown && <div style={{color:'red'}}>{meetingDropDown}</div>}
                 {/* display person*/}
                 {person && <Person person={person} />}
             </div>
@@ -99,8 +100,9 @@ export default Relay.createContainer(StoreContainer, {
     initialVariables: {
         status: 'any',
         parentVal: null, //relay doesn't like undefined; use null instead!
-        shouldFetchPerson: false,
-        ownVar: null
+        shouldFetchPerson: false, // dependent query controlled by parent
+        country_code: null,
+        shouldFetchMeetings:false //dependent query controlled by self
     },
         //1. run rootquery
         //2. rootQuery returns. RelayContainer(Parent)._getQueryData() 
@@ -110,21 +112,22 @@ export default Relay.createContainer(StoreContainer, {
         //   Store::render() is called here with **all** default variables
         //   Store::render() is called once step 5 is resolved with updated varialbes....
         //7. parent cwm query returns, RelayContainer(Store).componentWillReceiveprops => setstate(oldstate) { this._initialize(newVarialbes, oldVariables)}
-        //   Store::render() is called with updated varialbes (which override the ownVar)
+        //   Store::render() is called with updated varialbes (which override the country_code)
         /*
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"ownVar":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"ownVar":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"ownVar":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"ownVar":null}
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"ownVar":11}
-        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"ownVar":null}   --- pendingVariables null
-        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"ownVar":11}   --- pendingVariables null
-        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"ownVar":null}
-        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"ownVar":null}   --- pendingVariables null
+        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
+        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
+        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}
+        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}
+        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":11}
+        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":null}   --- pendingVariables null
+        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":null,"shouldFetchPerson":false,"country_code":11}   --- pendingVariables null
+        Store.js:119 ++++++++++++  prepareVariables  {"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}
+        Store.js:71                 render()  varialbes:{"status":"passed","parentVal":"some-data-from-parent","shouldFetchPerson":true,"country_code":null}   --- pendingVariables null
         
          */
     prepareVariables: prevVars => {
         const newVars = Object.assign({}, prevVars, {
+            shouldFetchMeetings: !!prevVars.country_code,
             shouldFetchPerson: !!prevVars.parentVal
         });
         console.log(`++++++++++++  prepareVariables  ${JSON.stringify(newVars)}`)
@@ -134,10 +137,21 @@ export default Relay.createContainer(StoreContainer, {
         store: () => Relay.QL`
         fragment on Store {
             counter,
-            ${increamentCounter.getFragment('store')}
+
+
+           
+             #simulate meeting dropdown where data is fetched based on $race_type, $country_code and $race_date
+             country_code,
+             meetingDropDown(country_code:$country_code) @include(if: $shouldFetchMeetings),
+
+
+             #simulate matchup events. matchupIds is passed from parent which is Event.tsx
              person (status: $status, dummy:$parentVal ) @include(if: $shouldFetchPerson){
                    ${Person.getFragment('person')}
-             }
+             },
+
+            #mutation area
+            ${increamentCounter.getFragment('store')}
         }`
     }
 })

@@ -94,8 +94,26 @@ const StoreType = new GraphQLObjectType({
         counter: {
             type: GraphQLInt,
             resolve: (root, args, {loader}) => {
-                debugger
                 return counter
+            }
+        },
+        //you must query current Store to get the country_code
+        country_code:{
+            type:GraphQLString,
+            resolve:()=>'cn'
+        },
+        //meeting dropdown needs country_code as parameter, which is only available after the root query
+        //this makes meetingDropDown a dependent field (MUST be deferred)
+        meetingDropDown:{
+            type:GraphQLString,
+            args:{
+                country_code:{
+                    type:GraphQLString,
+                    defaultValue:'au'
+                }
+            },
+            resolve:(_,args)=>{
+                return `dependent meeting dropdown data based on country_code ${args.country_code}....`
             }
         },
         person: {
@@ -112,7 +130,7 @@ const StoreType = new GraphQLObjectType({
             },
             resolve: (root, args) =>
                 new Promise((resolve, reject) => {
-                    console.log(args)
+                    console.log(`querying person with args == ${JSON.stringify(args)}`)
                     setTimeout(function () {
                         resolve(getPersonFromStatus(args.status)); // query database
                     }, 2 * 1000);
@@ -133,9 +151,10 @@ const QueryType = new GraphQLObjectType({
             args: {
                 id: { type: GraphQLString }
             },
+            //root: undefined. The previous object, which for a field on the root Query type is often not used.
+            //args, context{loaders}
             resolve: (root, args, {loaders}) => {
                 //debugger; //you don't have to set break point this way with Chrome debugger protocal (node2)
-                console.log(root)
                 console.log('got a root query.... args = ' + JSON.stringify(args))
                 return getStore()
             }

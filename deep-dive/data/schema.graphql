@@ -35,5 +35,7 @@ type Query {
 type Store implements Node {
   id: ID!
   counter: Int
+  country_code: String
+  meetingDropDown(country_code: String = "au"): String
   person(status: String = "any", dummy: String = "default"): Person
 }
