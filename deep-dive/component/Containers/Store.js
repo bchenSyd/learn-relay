@@ -47,7 +47,15 @@ class StoreContainer extends Component {
     }
 
     render() {
-
+        /*
+        after you call relay.setVarialbes(), relayContainer.onReadyStateChange will called multiple times during the fetch process
+        everytime RelayContainer.onReadyStateChanged() is called, your component gets re-rendered(), sometimes unnecessarily
+        ideally, the render() method should only get called 2 times after a setVariables()
+        1. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes (NETWORK_START)
+            1.1. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes  (unnecessarily) why??
+            1.2. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes  (unnecessarily) why??
+        2. ready == true,  variables = new variables ,     pendingVarialbes = null (NETWORK_RECEIVED_ALL)
+         */
         const { store, store: { counter, person}, relay } = this.props
         const {variables: {status}, pendingVariables} = relay
         return (<div>
