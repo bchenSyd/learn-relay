@@ -35,5 +35,5 @@ type Query {
 type Store implements Node {
   id: ID!
   counter: Int
-  person(status: String = "any"): Person
+  person(status: String = "any", dummy: String = "default"): Person
 }

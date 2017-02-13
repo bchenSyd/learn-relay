@@ -104,6 +104,10 @@ const StoreType = new GraphQLObjectType({
                 status: {
                     type: GraphQLString,
                     defaultValue: 'any'
+                },
+                dummy:{
+                    type:GraphQLString,
+                    defaultValue:'default'
                 }
             },
             resolve: (root, args) =>
