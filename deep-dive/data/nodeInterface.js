@@ -7,7 +7,7 @@ import {
     fromGlobalId,
     nodeDefinitions,
 } from 'graphql-relay'
-import { Person, PersonType, Store, StoreType, getPerson, getStore } from './schema'
+import { Person, PersonType, getPerson } from './schema'
 
 
 //******************************************************************************************
@@ -23,8 +23,6 @@ const {nodeInterface, nodeField} = nodeDefinitions(
         const [type,id] = globalId.split(':')
         if (type === 'Person') {  //should match const PersonType = new GraphQLObjectType({  name: 'Person',
             return getPerson(id);
-        } else if (type === 'Store') {
-            return getStore(id)
         } else {
             return null;
         }
@@ -32,9 +30,7 @@ const {nodeInterface, nodeField} = nodeDefinitions(
     (obj) => {
         if (obj instanceof Person) {
             return PersonType
-        } else if (obj instanceof Store) {
-            return StoreType
-        }
+        } 
         return null
     }
 )

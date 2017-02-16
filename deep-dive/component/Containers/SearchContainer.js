@@ -5,14 +5,14 @@ import increamentCounter from '../../mutation/increamentCounterMutation'
 import Person from './Person'
 
 
-class StoreContainer extends Component {
+class SearchContainer extends Component {
 
     _onMutate = event => {
-        const {relay, store} = this.props
+        const {relay, viewer} = this.props
         relay.commitUpdate(
-            /* the Mutation expects the prop passed in has a fragment called 'store' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
+            /* the Mutation expects the prop passed in has a fragment called 'viewer' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
             // if you don't include Person Component's fragment in Person's fragment builder, you get the same warning 
-            new increamentCounter({ store: store })
+            new increamentCounter({ viewer: viewer })
         )
     }
 
@@ -24,15 +24,15 @@ class StoreContainer extends Component {
     }
 
     _displayPendingMutation = () => {
-        const {store, relay} = this.props
-        const transactions = relay.getPendingTransactions(store)
+        const {viewer, relay} = this.props
+        const transactions = relay.getPendingTransactions(viewer)
         let hasPendingTrx = transactions && transactions.length > 0
-        const hasOptimisticUpdate = relay.hasOptimisticUpdate(store)
+        const hasOptimisticUpdate = relay.hasOptimisticUpdate(viewer)
         console.log(` hading pending transaction? ${hasPendingTrx}  --- hasOptimisticUpdate ? ${hasOptimisticUpdate}  ; most of the time , they should be synchronized`)
         if (hasPendingTrx) {
             return <h2>
                 mutation-> send request -> get response ->
-                    storeChange ---> GraphQLStoreChangeEmitter::_processSubscriber -> GraphQLStoreSingleQueryResolver::_handleChange -> RelayContainer._handleFragmentDataUpdate
+                    StoreChange ---> GraphQLStoreChangeEmitter::_processSubscriber -> GraphQLStoreSingleQueryResolver::_handleChange -> RelayContainer._handleFragmentDataUpdate
                 </h2>
         }
     }
@@ -41,7 +41,7 @@ class StoreContainer extends Component {
        const {variables: {status}, pendingVariables} = this.props.relay
         if (pendingVariables && 'status' in pendingVariables) {
             return <h2>RelayContainer.setVariables()=> this.context.relay.environment.primeCache(callback= relayContainer.onReadyStateChange) =>
-                        storeData.getQueryRunner => GraphqlQueryRunner.run => GraphqlQueryRunner.runQueryies => RelayNetworkLayer...</h2>
+                        StoreData.getQueryRunner => GraphqlQueryRunner.run => GraphqlQueryRunner.runQueryies => RelayNetworkLayer...</h2>
 
         }
     }
@@ -56,7 +56,7 @@ class StoreContainer extends Component {
             1.2. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes  (unnecessarily) why??
         2. ready == true,  variables = new variables ,     pendingVarialbes = null (NETWORK_RECEIVED_ALL)
          */
-        const { store, store: { counter, person}, relay } = this.props
+        const { viewer, viewer: { counter, person}, relay } = this.props
         const {variables: {status}, pendingVariables} = relay
         return (<div>
             <div style={{ marginTop: 40 }}>
@@ -84,15 +84,15 @@ class StoreContainer extends Component {
     }
 }
 
-export default Relay.createContainer(StoreContainer, {
+export default Relay.createContainer(SearchContainer, {
     initialVariables: {
         status: 'any'
     },
     fragments: {
-        store: () => Relay.QL`
-        fragment on Store {
+        viewer: () => Relay.QL`
+        fragment on Viewer {
             counter,
-            ${increamentCounter.getFragment('store')}
+            ${increamentCounter.getFragment('viewer')}
              person (status: $status ){
                    ${Person.getFragment('person')}
              }

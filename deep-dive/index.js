@@ -31,8 +31,13 @@ class HomeRoute extends Route {
         //          2. don't specify subfields of your root query field
         // relay will automatically use the one RootContainer defines becuase it konws the rule 
         // **********************   Queries supplied at the root should contain exactly one fragment and no fields  *********************
-        // so it would have the same effect as you would explicitly call component.getFragment('store1')
-        store: () => Relay.QL`query{  store }`
+        /* short form for 
+        name_?? : (component)=>Relay.QL`
+                            viewer{
+                                ${component.getFragment('name_??')}
+                            }
+                    ` */
+        viewer: () => Relay.QL`query{  viewer }`
     }
 }
 

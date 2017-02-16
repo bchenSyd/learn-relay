@@ -22,7 +22,6 @@ export class Store { }
 //********************************** */
 const person_db = [] //should read from database
 const store = new Store()  //single tone; global instance;
-store.id=1
 //********************************** */
 
 
@@ -81,16 +80,11 @@ const PersonType = new GraphQLObjectType({
     interfaces: [nodeInterface]
 })
 
-const StoreType = new GraphQLObjectType({
-    name: 'Store',
+const ViewerType = new GraphQLObjectType({
+    name: 'Viewer',
     description: '...',
 
     fields: () => ({
-        //id: globalIdField('Store'),
-        id:{
-            type:new GraphQLNonNull(GraphQLID),
-            resolve:obj=>`Store:${obj.id}`
-        },
         counter: {
             type: GraphQLInt,
             resolve: (root, args, {loader}) => {
@@ -115,8 +109,7 @@ const StoreType = new GraphQLObjectType({
                 })
         }
     }
-    ),
-    interfaces: [nodeInterface]
+    )
 }
 )
 
@@ -124,11 +117,8 @@ const QueryType = new GraphQLObjectType({
     name: 'Query',
     fields: () => ({
         node: nodeField, //this is required for  relay query variables
-        store: {
-            type: StoreType,
-            args: {
-                id: { type: GraphQLString }
-            },
+        viewer: {
+            type: ViewerType,
             resolve: (root, args, {loaders}) => {
                 //debugger; //you don't have to set break point this way with Chrome debugger protocal (node2)
                 console.log(root)
@@ -156,8 +146,8 @@ const mutationOutputType = new GraphQLObjectType({
         clientMutationId: {
             type: new GraphQLNonNull(GraphQLString)
         },
-        store: {
-            type: StoreType,
+        viewer: {
+            type: ViewerType,
             resolve: () => {
                 return getStore()
             }
@@ -177,6 +167,7 @@ const MutationType = new GraphQLObjectType({
                 }
             },
             resolve: (root, args) => (new Promise((resolve, reject) => {
+                console.log(`mutation..... return counter = ${counter + 1}`)
                 setTimeout(function () {
                     resolve({
                         clientMutationId: 'mutation_client_id',
@@ -198,7 +189,5 @@ const schema = new GraphQLSchema({
 export default schema
 export {
     PersonType,
-    StoreType,
-    getPerson,
-    getStore
+    getPerson
 }
