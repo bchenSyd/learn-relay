@@ -48,7 +48,7 @@ class StarWarsApp extends React.Component {
   }
 
   render() {
-    const {factions} = this.props;
+    const {factionNames,factions} = this.props;
     return (
       <div>
         <ol>
@@ -90,7 +90,7 @@ class StarWarsApp extends React.Component {
 export default Relay.createContainer(StarWarsApp, {
   fragments: {
     factions: () => Relay.QL`
-      fragment on Faction @relay(plural: true) {
+      fragment on Faction  @relay(plural: true) {
         id,
         factionId,
         name,
