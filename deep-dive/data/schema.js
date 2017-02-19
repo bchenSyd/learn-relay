@@ -116,7 +116,7 @@ const ViewerType = new GraphQLObjectType({
 const QueryType = new GraphQLObjectType({
     name: 'Query',
     fields: () => ({
-        node: nodeField, //this is required for  relay query variables
+        node: nodeField, //root query must declare node field so that Relay can send node queries
         viewer: {
             type: ViewerType,
             resolve: (root, args, {loaders}) => {
