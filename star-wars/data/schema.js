@@ -1,15 +1,3 @@
-/**
- * This file provided by Facebook is for non-commercial testing and evaluation
- * purposes only.  Facebook reserves all rights not expressly granted.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
- * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 'use strict';
 
 import {
@@ -40,90 +28,17 @@ import {
   getShips,
 } from './database';
 
-/**
- * This is a basic end-to-end test, designed to demonstrate the various
- * capabilities of a Relay-compliant GraphQL server.
- *
- * It is recommended that readers of this test be familiar with
- * the end-to-end test in GraphQL.js first, as this test skips
- * over the basics covered there in favor of illustrating the
- * key aspects of the Relay spec that this test is designed to illustrate.
- *
- * We will create a GraphQL schema that describes the major
- * factions and ships in the original Star Wars trilogy.
- *
- * NOTE: This may contain spoilers for the original Star
- * Wars trilogy.
- */
+const fromGlobalId_unibet = (globalId)=>{
+    const [type, id] = globalId.split(':')
+    return {
+      type,id
+    }
+}
+const toGlobalId_unitbet = (typeStr,id)=> [typeStr,id].join(':')
 
-/**
- * Using our shorthand to describe type systems,
- * the type system for our example will be the following:
- *
- * interface Node {
- *   id: ID!
- * }
- *
- * type Faction : Node {
- *   id: ID!
- *   name: String
- *   ships: ShipConnection
- * }
- *
- * type Ship : Node {
- *   id: ID!
- *   name: String
- * }
- *
- * type ShipConnection {
- *   edges: [ShipEdge]
- *   pageInfo: PageInfo!
- * }
- *
- * type ShipEdge {
- *   cursor: String!
- *   node: Ship
- * }
- *
- * type PageInfo {
- *   hasNextPage: Boolean!
- *   hasPreviousPage: Boolean!
- *   startCursor: String
- *   endCursor: String
- * }
- *
- * type Query {
- *   rebels: Faction
- *   empire: Faction
- *   node(id: ID!): Node
- * }
- *
- * input IntroduceShipInput {
- *   clientMutationId: string!
- *   shipName: string!
- *   factionId: ID!
- * }
- *
- * input IntroduceShipPayload {
- *   clientMutationId: string!
- *   ship: Ship
- *   faction: Faction
- * }
- *
- * type Mutation {
- *   introduceShip(input IntroduceShipInput!): IntroduceShipPayload
- * }
- */
-
-/**
- * We get the node interface and field from the Relay library.
- *
- * The first method defines the way we resolve an ID to its object.
- * The second defines the way we resolve a node object to its GraphQL type.
- */
 const {nodeInterface, nodeField} = nodeDefinitions(
   (globalId) => {
-    const {type, id} = fromGlobalId(globalId);
+    const {type, id} = fromGlobalId_unibet(globalId);
     if (type === 'Faction') {
       return getFaction(id);
     } else if (type === 'Ship') {
@@ -137,20 +52,15 @@ const {nodeInterface, nodeField} = nodeDefinitions(
   }
 );
 
-/**
- * We define our basic ship type.
- *
- * This implements the following type system shorthand:
- *   type Ship : Node {
- *     id: String!
- *     name: String
- *   }
- */
+
 const shipType = new GraphQLObjectType({
   name: 'Ship',
   description: 'A ship in the Star Wars saga',
   fields: () => ({
-    id: globalIdField('Ship'),
+    id: {
+      type: new GraphQLNonNull(GraphQLID),   //note: you MUST use  GraphQLID, not ANYTHINGELSE!
+      resolve: obj => toGlobalId_unitbet('Ship', obj.id)
+    },
     name: {
       type: GraphQLString,
       description: 'The name of the ship.',
@@ -159,42 +69,20 @@ const shipType = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
-/**
- * We define a connection between a faction and its ships.
- *
- * connectionType implements the following type system shorthand:
- *   type ShipConnection {
- *     edges: [ShipEdge]
- *     pageInfo: PageInfo!
- *   }
- *
- * connectionType has an edges field - a list of edgeTypes that implement the
- * following type system shorthand:
- *   type ShipEdge {
- *     cursor: String!
- *     node: Ship
- *   }
- */
 const {
   connectionType: shipConnection,
   edgeType: ShipEdge,
-} = connectionDefinitions({name: 'Ship', nodeType: shipType});
+} = connectionDefinitions({ name: 'Ship', nodeType: shipType });
 
-/**
- * We define our faction type, which implements the node interface.
- *
- * This implements the following type system shorthand:
- *   type Faction : Node {
- *     id: String!
- *     name: String
- *     ships: ShipConnection
- *   }
- */
+
 const factionType = new GraphQLObjectType({
   name: 'Faction',
   description: 'A faction in the Star Wars saga',
   fields: () => ({
-    id: globalIdField('Faction'),
+    id: {
+      type: new GraphQLNonNull(GraphQLID),   //note: you MUST use  GraphQLID, not ANYTHINGELSE!
+      resolve: obj => toGlobalId_unitbet('Faction', obj.id)
+    },
     factionId: {
       type: GraphQLString,
       description: 'id of faction in db',
@@ -217,18 +105,14 @@ const factionType = new GraphQLObjectType({
   interfaces: [nodeInterface],
 });
 
-/**
- * This is the type that will be the root of our query,
- * and the entry point into our schema.
- *
- * This implements the following type system shorthand:
- *   type Query {
- *     factions(names: [FactionName]): [Faction]
- *     node(id: ID!): Node
- *   }
- */
-const queryType = new GraphQLObjectType({
-  name: 'Query',
+// a viewer is normally mapped to a logged in user
+const viewer = [{ name: 'bchen' }, { name: 'joanna' }]
+const getViewer = () => {
+  return viewer[0]
+}
+
+const ViewerType = new GraphQLObjectType({
+  name: 'Viewer',
   fields: () => ({
     factions: {
       type: new GraphQLList(factionType),
@@ -237,28 +121,25 @@ const queryType = new GraphQLObjectType({
           type: new GraphQLList(GraphQLString),
         },
       },
-      resolve: (root, {names}) => getFactions(names),
-    },
-    node: nodeField,
+      resolve: (root, {names}) => getFactions(names)
+    }
   }),
 });
 
-/**
- * This will return a GraphQLFieldConfig for our ship mutation.
- *
- * It creates these two types implicitly:
- *   input IntroduceShipInput {
- *     clientMutationId: string!
- *     shipName: string!
- *     factionId: ID!
- *   }
- *
- *   input IntroduceShipPayload {
- *     clientMutationId: string!
- *     ship: Ship
- *     faction: Faction
- *   }
- */
+//root query 
+const queryType = new GraphQLObjectType({
+  name: 'Query',
+  fields: () => ({
+    node: nodeField, //root query must declare node field so that Relay can send node queries
+    viewer: {
+      type: ViewerType,
+      resolve: () => {
+        return getViewer()
+      }
+    }
+  }),
+});
+
 const shipMutation = mutationWithClientMutationId({
   name: 'IntroduceShip',
   inputFields: {

@@ -4,6 +4,9 @@ import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import { schema } from './data/schema';
+//if you don't have below line, nodemon won't re-load generateSchemaJson, 
+//and as such your old schema.json is used
+import './scripts/updateSchema'
 
 const APP_PORT = 3000;
 const GRAPHQL_PORT = 8080;
@@ -29,7 +32,10 @@ const compiler = webpack({
       },
     ],
   },
-  output: { filename: 'app.js', path: '/' },
+  output: {
+    filename: 'app.js',
+    path: '/'
+  },
 });
 const app = new WebpackDevServer(compiler, {
   contentBase: '/public/',
