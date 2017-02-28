@@ -31,7 +31,7 @@ ReactDOM.render(
   <Relay.RootContainer
     Component={StarWarsLobby}
     route={new StarWarsAppHomeRoute({
-      // don't define initial param here anymore;
+      //initial variables, will pass to Component as props
       factionNames: ['empire', 'rebels']
     })}
   />,
