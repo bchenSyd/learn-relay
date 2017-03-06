@@ -11,7 +11,10 @@ class TodoApp extends React.Component {
    route:PropTypes.object
  }
 
-  _handleTextInputSave = (text) => {
+// babel stage 2 feature, see: https://babeljs.io/docs/plugins/preset-stage-2/
+  //or:
+//   plugins: ["transform-class-properties"]
+  _handleTextInputSave = (text) => { //this is an instance property with `this` bound to the instance
     this.props.relay.commitUpdate(
       new AddTodoMutation({text, viewer: this.props.viewer})
     );
