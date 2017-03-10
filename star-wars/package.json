@@ -3,8 +3,8 @@
   "scripts": {
     "start-server": "nodemon ./server.js  --exec babel-node",
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
-    "debug-server": "babel-node ./server.js --source-maps --debug-brk --inspect",
-    "debug-server-v2": "node  ./node_modules/babel-cli/bin/babel-node.js  ./server.js --debug-brk --inspect",
+    "debug-server": "babel-node ./server.js --source-maps --debug-brk --inspect &echo '--source-maps is babel specific'",
+    "debug-server-v2": "node  --debug-brk --inspect  ./node_modules/babel-cli/bin/babel-node.js  ./server.js &echo '--debug-brk must be ahead of file' ",
     "start-client": "webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/updateSchema.js",
     "start": "npm-run-all --parallel start-server   start-client"
