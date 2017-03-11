@@ -186,7 +186,8 @@ const GraphQLTodo = new GraphQLObjectType({
     },
     competitors: {
       type: new GraphQLList(CompetitorType),
-      resolve: () => {
+      // http://graphql.org/learn/execution/#root-fields-resolvers
+      resolve: (objct, args, context) => {
         return [{
           id: 1,
           name: 'horse#1',
@@ -255,6 +256,7 @@ const GraphQLUser = new GraphQLObjectType({
       },
       ///**************************************************************************************/
       // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
+      // what are the parameters of resolve? http://graphql.org/learn/execution/#root-fields-resolvers
       resolve: (_, { status, id, ...args }) =>
 
         new Promise(resovle => {
