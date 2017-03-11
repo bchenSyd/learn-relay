@@ -79,6 +79,12 @@ export default Relay.createContainer(TodoList, {
             node {
               id,
               summary,
+              #carousel
+              competitors{
+                id,
+                name,
+                saddleNumber
+              }
               ${Todo.getFragment('todo')},
             },
           },

@@ -48,7 +48,7 @@ import {
   renameTodo,
 } from './database';
 
- //system way
+//system way
 //const {type, id} = fromGlobalId('Tfjs678==')
 
 
@@ -69,14 +69,14 @@ function toGlobalId(type, id) {
 
 */
 //const globalID = toGlobalId('Todo','123')
- //unibet way:
-const fromGlobalId_unibet = (globalId)=>{
-    const [type, id] = globalId.split(':')
-    return {
-      type,id
-    }
+//unibet way:
+const fromGlobalId_unibet = (globalId) => {
+  const [type, id] = globalId.split(':')
+  return {
+    type, id
+  }
 }
-const toGlobalId_unitbet = (typeStr,id)=> [typeStr,id].join(':')
+const toGlobalId_unitbet = (typeStr, id) => [typeStr, id].join(':')
 
 /******************************************************** */
 // the purpose of nodeDefinitions is for relay to be able to get a node based on globalId 
@@ -96,10 +96,10 @@ const toGlobalId_unitbet = (typeStr,id)=> [typeStr,id].join(':')
   }
 }
  */
-const {nodeInterface, nodeField} = nodeDefinitions(
+const { nodeInterface, nodeField } = nodeDefinitions(
   // idFetcher
   (globalId) => {
-    const {type, id} = fromGlobalId_unibet(globalId);
+    const { type, id } = fromGlobalId_unibet(globalId);
     console.log(`get node from node id#${type + ':' + id}`)
     if (type === 'Todo') {
       return getTodo(id);
@@ -123,6 +123,31 @@ const {nodeInterface, nodeField} = nodeDefinitions(
   }
 );
 /******************************************************** */
+const CompetitorType = new GraphQLObjectType({
+  name: 'Competitor',
+  description: 'horse',
+
+  fields: {
+    id: {
+      type: new GraphQLNonNull(GraphQLID),   //note: you MUST use  GraphQLID, not ANYTHINGELSE!
+      resolve: obj => toGlobalId_unitbet('Competitor', obj.id)
+    },
+    name: {
+      type: GraphQLString
+    },
+    saddleNumber: {
+      type: GraphQLInt
+    },
+    eventId: {
+      type: GraphQLString
+    },
+    suspended: {
+      type: GraphQLBoolean
+    }
+  }
+})
+
+
 const GraphQLTodo = new GraphQLObjectType({
   name: 'Todo',
   description: '...',
@@ -134,7 +159,7 @@ const GraphQLTodo = new GraphQLObjectType({
     //unibet way:
     id: {
       type: new GraphQLNonNull(GraphQLID),   //note: you MUST use  GraphQLID, not ANYTHINGELSE!
-      resolve: obj => toGlobalId_unitbet('Todo' , obj.id)
+      resolve: obj => toGlobalId_unitbet('Todo', obj.id)
     },
 
     origId: {
@@ -158,30 +183,50 @@ const GraphQLTodo = new GraphQLObjectType({
     details: {
       type: GraphQLString,
       resolve: obj => obj.text + '__details'
+    },
+    competitors: {
+      type: new GraphQLList(CompetitorType),
+      resolve: () => {
+        return [{
+          id: 1,
+          name: 'horse#1',
+          saddleNumber: 1,
+          eventId: 'event:1',
+          suspended: false
+        }, {
+          id: 2,
+          name: 'horse#2',
+          saddleNumber: 2,
+          eventId: 'event:1',
+          suspended: true
+        }]
+      }
     }
   },
   interfaces: [nodeInterface],
 });
 
+//TodoConnection  definition
 const {
-  connectionType: TodosConnection,
+      connectionType: TodosConnection,
   edgeType: GraphQLTodoEdge,
-} = connectionDefinitions({  // same as GraphQLList(GraphQLTodo), just wrap the list in `edges`
-  name: 'Todo',
-  nodeType: GraphQLTodo,
-  connectionFields: () => ({
-    // a connection type by default has 'edges' and 'pageInfo' fields
-    // now we are adding the third one, which is a custom one;
-    totalCount: {
-      type: GraphQLInt,
-      description: ' a custom connection field. will be defined at connectionType level',
-      resolve: (connection) => {
-        return connection.edges.length;
+    } = connectionDefinitions({  // same as GraphQLList(GraphQLTodo), just wrap the list in `edges`
+    name: 'Todo',
+    nodeType: GraphQLTodo,
+    connectionFields: () => ({
+      // a connection type by default has 'edges' and 'pageInfo' fields
+      // now we are adding the third one, which is a custom one;
+      totalCount: {
+        type: GraphQLInt,
+        description: ' a custom connection field. will be defined at connectionType level',
+        resolve: (connection) => {
+          return connection.edges.length;
+        }
       }
-    }
-  })
-});
+    })
+  });
 
+//user defination
 const GraphQLUser = new GraphQLObjectType({
   name: 'User',
   fields: {
@@ -190,7 +235,7 @@ const GraphQLUser = new GraphQLObjectType({
     //unibet way:
     id: {
       type: new GraphQLNonNull(GraphQLID),
-      resolve: obj =>toGlobalId_unitbet('User',  obj.id)
+      resolve: obj => toGlobalId_unitbet('User', obj.id)
     },
 
     todos: {
@@ -210,7 +255,7 @@ const GraphQLUser = new GraphQLObjectType({
       },
       ///**************************************************************************************/
       // also , as a convention, if you don't need an arg in the funtion signature, name it '_'
-      resolve: (_, {status, id, ...args}) => 
+      resolve: (_, { status, id, ...args }) =>
 
         new Promise(resovle => {
           setTimeout(function () {
@@ -253,7 +298,7 @@ const GraphQLAddTodoMutation = mutationWithClientMutationId({
   outputFields: {
     todoEdge: {
       type: GraphQLTodoEdge,
-      resolve: ({localTodoId}) => {
+      resolve: ({ localTodoId }) => {
         const todo = getTodo(localTodoId);
         return {
           cursor: cursorForObjectInConnection(getTodos(), todo),
@@ -266,7 +311,7 @@ const GraphQLAddTodoMutation = mutationWithClientMutationId({
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({text}) => {
+  mutateAndGetPayload: ({ text }) => {
     const localTodoId = addTodo(text);
     return { localTodoId };
   },
@@ -281,14 +326,14 @@ const GraphQLChangeTodoStatusMutation = mutationWithClientMutationId({
   outputFields: {
     todo: {
       type: GraphQLTodo,
-      resolve: ({localTodoId}) => getTodo(localTodoId),
+      resolve: ({ localTodoId }) => getTodo(localTodoId),
     },
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({id, complete}) => {
+  mutateAndGetPayload: ({ id, complete }) => {
     const localTodoId = fromGlobalId_unibet(id).id;
     changeTodoStatus(localTodoId, complete);
     return { localTodoId };
@@ -303,14 +348,14 @@ const GraphQLMarkAllTodosMutation = mutationWithClientMutationId({
   outputFields: {
     changedTodos: {
       type: new GraphQLList(GraphQLTodo),
-      resolve: ({changedTodoLocalIds}) => changedTodoLocalIds.map(getTodo),
+      resolve: ({ changedTodoLocalIds }) => changedTodoLocalIds.map(getTodo),
     },
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({complete}) => {
+  mutateAndGetPayload: ({ complete }) => {
     const changedTodoLocalIds = markAllTodos(complete);
     return { changedTodoLocalIds };
   },
@@ -323,7 +368,7 @@ const GraphQLRemoveCompletedTodosMutation = mutationWithClientMutationId({
     //outputFields gets its source data from mutateAndGetPayload
     deletedTodoIds: {
       type: new GraphQLList(GraphQLString),
-      resolve: ({deletedTodoIds}) => deletedTodoIds,
+      resolve: ({ deletedTodoIds }) => deletedTodoIds,
     },
     viewer: {
       type: GraphQLUser,
@@ -332,7 +377,7 @@ const GraphQLRemoveCompletedTodosMutation = mutationWithClientMutationId({
   },
   mutateAndGetPayload: () => {
     const deletedTodoLocalIds = removeCompletedTodos();
-    const deletedTodoIds = deletedTodoLocalIds.map(toGlobalId_unitbet.bind(null, 'Todo')); 
+    const deletedTodoIds = deletedTodoLocalIds.map(toGlobalId_unitbet.bind(null, 'Todo'));
     return { deletedTodoIds };
   },
 });
@@ -346,14 +391,14 @@ const GraphQLRemoveTodoMutation = mutationWithClientMutationId({
   outputFields: {
     deletedTodoId: {
       type: GraphQLID,
-      resolve: ({id}) => id,
+      resolve: ({ id }) => id,
     },
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({id}) => {
+  mutateAndGetPayload: ({ id }) => {
     const localTodoId = fromGlobalId_unibet(id).id;
     removeTodo(localTodoId);
     return { id };
@@ -369,10 +414,10 @@ const GraphQLRenameTodoMutation = mutationWithClientMutationId({
   outputFields: {
     todo: {
       type: GraphQLTodo,
-      resolve: ({localTodoId}) => getTodo(localTodoId),
+      resolve: ({ localTodoId }) => getTodo(localTodoId),
     },
   },
-  mutateAndGetPayload: ({id, text}) => {
+  mutateAndGetPayload: ({ id, text }) => {
     const localTodoId = fromGlobalId_unibet(id).id;
     renameTodo(localTodoId, text);
     return { localTodoId };

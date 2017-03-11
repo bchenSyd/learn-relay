@@ -3,25 +3,22 @@ import Relay, { createContainer } from 'react-relay'
 import { Link } from 'react-router'
 import TodoList from './TodoList'
 class TodoDetails extends Component {
-    componentWillMount() {
-        console.log(`******************* componentWillMount is Invoked!!!`)
-    }
-
-    render() {
-        const {viewer, viewer: {
+  render() {
+        const { viewer, viewer: {
             todos: {
                 edges
             }
         }, relay
         } = this.props
 
-     
-        const {node: {id, text, details}} = edges[0]
+
+        const { node: { id, text, details, competitors } } = edges[0]
         return (
             <div>
-                  <div style={{marginBottom:'100', borderBottom:'solid red 1px'}}>
-                     <TodoList viewer={viewer} />
+                {false && <div style={{ marginBottom: '100px', borderBottom: 'solid red 1px' }}>
+                    <TodoList viewer={viewer} />
                 </div>
+                }
                 <div>
                     <Link to={`/`} >Home</Link>
                     <h1>details for {id}</h1>
@@ -29,11 +26,22 @@ class TodoDetails extends Component {
                         <li>text : {text}</li>
                         <li>details: {details}</li>
                     </ul>
+                    <h1>competitors</h1>
+                    <ul>
+                        {competitors.map((val, index) =>
+                            <li key={`competitory_${index}`}>
+                                <div>id : <stong>{val.id}</stong></div>
+                                <div>name : <strong>{val.name}</strong></div>
+                                <div>saddleNumber : <strong>{val.saddleNumber}</strong></div>
+                                <div>suspended : <strong>{val.suspended.toString()}</strong></div>
+                            </li>
+                        )}
+                    </ul>
                     <button onClick={() => {
                         relay.forceFetch()
                     }}> Force Fetch </button>
                 </div>
-               
+
             </div>
         );
     }
@@ -58,7 +66,14 @@ export default createContainer(TodoDetails, {
                        node{
                            id,
                            text,
-                           details
+                           details, 
+                           competitors{
+                               id,
+                               name,
+                               saddleNumber,
+                               eventId,
+                               suspended
+                           }
                        }
                    }
                },
