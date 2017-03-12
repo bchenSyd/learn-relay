@@ -79,11 +79,15 @@ export default Relay.createContainer(TodoList, {
             node {
               id,
               summary,
-              #carousel
+              #carousel , only fetch the top 4; and contains eventId and suspended
+              #the rest competitors fetched in FKEventTemplate get merged and stored in the eventId
+              #when navi back, relay found that eventId and suspended are missing for the newly fetched competitors
               competitors{
                 id,
                 name,
-                saddleNumber
+                saddleNumber,
+                eventId,
+                suspended
               }
               ${Todo.getFragment('todo')},
             },

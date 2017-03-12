@@ -26,14 +26,13 @@ class TodoDetails extends Component {
                         <li>text : {text}</li>
                         <li>details: {details}</li>
                     </ul>
-                    <h1>competitors</h1>
+                    <h1>competitors -- here we fetch **all** competitors (carousel only fetch top 4)</h1>
                     <ul>
                         {competitors.map((val, index) =>
                             <li key={`competitory_${index}`}>
                                 <div>id : <stong>{val.id}</stong></div>
                                 <div>name : <strong>{val.name}</strong></div>
                                 <div>saddleNumber : <strong>{val.saddleNumber}</strong></div>
-                                <div>suspended : <strong>{val.suspended.toString()}</strong></div>
                             </li>
                         )}
                     </ul>
@@ -66,13 +65,12 @@ export default createContainer(TodoDetails, {
                        node{
                            id,
                            text,
-                           details, 
+                           details,
+                           #inside FKEventTemplate, we fetch the rest competitors, without eventId and suspended
                            competitors{
                                id,
                                name,
-                               saddleNumber,
-                               eventId,
-                               suspended
+                               saddleNumber
                            }
                        }
                    }
