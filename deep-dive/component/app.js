@@ -6,25 +6,37 @@ import Store from './Containers/Store'
 const some_data_from_parent = 'some-data-from-parent'  //in most of cases, 'some-data-from-parent' is a field value returned from root query
 class App extends Component {
 
+    constructor(props) {
+        super(props)
+        this.state ={
+            dummy: 0
+        }
+    }
 
     componentWillMount() {
-        const {relay} = this.props
+        const { relay } = this.props
         relay.setVariables({
             parentVal: some_data_from_parent
         })
     }
+    //transform class properties , a babel stage2 feature
+    _refresh= ()=>{
+        this.setState({dummy:'new dummy'})
+    }
 
     render() {
 
-        const {store, status, relay,relay: {variables: {parentVal}}} = this.props
+        const { store, status, relay, relay: { variables: { parentVal } } } = this.props
         //console.log(` *****************   the param:status passe from route  is ${props.status} `)
         return (
             <div id='app'>
                 <div id='relay-stores'>
+                    <h2>equivalent of Events.tsx</h2>
                     <ul>
                         <li>_queuedStore: RelayRecordStore;</li>
                         <li>_recordStore: RelayRecordStore;</li>
                         <li style={{ color: 'grey' }}>_cachedStore: RelayRecordStore;</li>
+                        <li><button onClick={this._refresh}>  setState()</button></li>
                     </ul>
                 </div>
                 {/* CATCH
@@ -35,11 +47,14 @@ class App extends Component {
                    becuase you have  ${Store.getFragment('store', variables)} which override Store's default variables
                 //source code see: D:\__work\relay-digest\container\RelayContainer.ts line:540
            */}
-                <Store store={store}
-                    relay={relay}  //don't delete!!!!  Store needs this to re-render as soon as you call setVarialbes (otherwise you never see pending variables!)
-                    status={status}
-                    parentVal={parentVal}
-                />
+                <div style={{marginTop:'10px'}}>   
+                    <Store store={store}
+                        relay={relay}  //don't delete!!!!  Store needs this to re-render as soon as you call setVarialbes (otherwise you never see pending variables!)
+                        status={status}
+                        parentVal={parentVal}
+                    />
+                </div>
+
             </div>
         )
     }
