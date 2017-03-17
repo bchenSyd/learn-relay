@@ -57,7 +57,9 @@ class SearchContainer extends Component {
         2. ready == true,  variables = new variables ,     pendingVarialbes = null (NETWORK_RECEIVED_ALL)
          */
         const { viewer, viewer: { counter}, relay } = this.props
-        const { variables: { status }, pendingVariables } = relay
+
+        // to hand on fragment to child components
+        const { variables: { status, countryCode }, pendingVariables } = relay
         return (<div>
             <div style={{ marginTop: 40 }}>
                 {/* handle mutation*/}
@@ -77,8 +79,11 @@ class SearchContainer extends Component {
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
+
+            
                 {/* pass relay.variables.status to child component*/}
-                <Person viewer={viewer} status={status}/> 
+                <Person viewer={viewer} status={status} relay={relay} countryCode={countryCode}/>
+
             </div>
         </div>)
     }
@@ -87,6 +92,7 @@ class SearchContainer extends Component {
 export default Relay.createContainer(SearchContainer, {
     initialVariables: {
         status: 'any',
+        countryCode:'parent'
         // searchContainer has no knowledge of countryCode
     },
     fragments: {

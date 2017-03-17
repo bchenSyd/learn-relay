@@ -15,22 +15,24 @@ class Person extends Component {
         relay.setVariables({
             countryCode
         })
-
     }
 
     componentWillReceiveProps(nextProps) {
-  
+        // https://github.com/facebook/relay/issues/1138
+        // joseph savona's comment isn't correct. the variables are overriden by parent
+        // todo: if status
     }
 
 
     render() {
 
-        const { viewer:{person} } = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
+        const { viewer, viewer:{person}, relay } = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
         
         //******************************************************************************************
-        const countryCode = this.props.relay.variables.countryCode; // should always be like this!!
+        const countryCode = relay.variables.countryCode; // should always be like this!!
         //******************************************************************************************
-
+        //console.log(`pending trx: ${JSON.stringify(relay.getPendingTransactions(viewer))}`)
+        console.log(` relay.varialbes is ${JSON.stringify(relay.variables)}. relay.pendingVariables is ${JSON.stringify(relay.pendingVariables)}`)
         return (
             <div>
                 <PersonTemplate person={person} countryCode={countryCode} />
