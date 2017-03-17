@@ -41,9 +41,9 @@ const getPerson = id => {
     return person_db.find(p => p.id === id)
 }
 
-const getPersonFromStatus = status => {
+const getPersonFromStatus = ({status, countryCode}) => {
     const result = person_db.find(p => p.status === status)
-    console.log(result)
+    result.countryCode = countryCode
     return result
 }
 
@@ -73,6 +73,9 @@ const PersonType = new GraphQLObjectType({
         },
         status: {
             type: GraphQLString
+        }, 
+        countryCode:{
+            type: GraphQLString
         }
     }),
     //GraphQLInterfaceType default to graphqlObjectType::isTypeOf to tell where an object can be converted to graphqlObjectType
@@ -95,6 +98,10 @@ const ViewerType = new GraphQLObjectType({
         person: {
             type: PersonType,
             args: {
+                countryCode:{
+                    type:GraphQLString,
+                    defaultValue:'default_country_code'
+                },
                 status: {
                     type: GraphQLString,
                     defaultValue: 'any'
@@ -104,7 +111,7 @@ const ViewerType = new GraphQLObjectType({
                 new Promise((resolve, reject) => {
                     console.log(args)
                     setTimeout(function () {
-                        resolve(getPersonFromStatus(args.status)); // query database
+                        resolve(getPersonFromStatus(args)); // query database
                     }, 2 * 1000);
                 })
         }

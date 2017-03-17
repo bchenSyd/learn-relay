@@ -26,12 +26,8 @@ class HomeRoute extends Route {
         status:`passed` //=======================================================================> this will be passed to the Route Component as a prop
     })
     static queries = {
-        // if you 
-        //          1. don't pass any parameter in below queryconfig, 
-        //          2. don't specify subfields of your root query field
-        // relay will automatically use the one RootContainer defines becuase it konws the rule 
         // **********************   Queries supplied at the root should contain exactly one fragment and no fields  *********************
-        /* short form for 
+        /* short for 
         name_?? : (component)=>Relay.QL`
                             viewer{
                                 ${component.getFragment('name_??')}

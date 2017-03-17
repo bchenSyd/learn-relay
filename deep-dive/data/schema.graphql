@@ -25,6 +25,7 @@ type Person implements Node {
   name: String
   age: Int
   status: String
+  countryCode: String
 }
 
 type Query {
@@ -34,5 +35,5 @@ type Query {
 
 type Viewer {
   counter: Int
-  person(status: String = "any"): Person
+  person(countryCode: String = "default_country_code", status: String = "any"): Person
 }

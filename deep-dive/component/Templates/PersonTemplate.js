@@ -9,7 +9,7 @@ import Relay, { createContainer } from 'react-relay'
 
 //a react component should map to a graphql objectType
 const PersonTemplate = props => {
-    const {person: {name, age, status}} = props
+    const { person: { name, age, status, countryCode } } = props
     return (
         <div>
             <div id='search_result'>
@@ -25,6 +25,10 @@ const PersonTemplate = props => {
                     <span>status  --  </span>
                     <span>{status}</span>
                 </div>
+                <div style={{ marginTop: 10 }}>
+                    <span>countrycode (redux) --  </span>
+                    <span>{countryCode}</span>
+                </div>
             </div>
         </div>
     )
@@ -33,16 +37,17 @@ const PersonTemplate = props => {
 
 
 export default createContainer(PersonTemplate, {
+    initialVariables: {
+        countryCode: null // to be passed from frankel/person
+    },
     fragments: {
-        //think of `fragment on` as React Component property definition
-        //the property name must be the field name defined in graphql
-        //you **cannot** pick a random name here as in root fragment
         person: () => Relay.QL`
             fragment on Person{
                 name,
                 age,
                 status,
-                id
+                id, 
+                countryCode
             }`
     }
 })
