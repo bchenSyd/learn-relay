@@ -59,62 +59,61 @@ ReactDOM.render(
     environment={Relay.Store}
     history={history}
     render={applyRouterMiddleware(useRelay)}>
-    <Route path="/"
-      component={TodoApp}
-      queries={ViewerQueries}>
-      <IndexRoute
-        component={TodoList}
-        queries={ViewerQueries}
-        render={  ({props, done, error, state})=>{
-            if(error){
-              return <h1> error</h1>
-            }else if(props){
-                console.log('display....')
-              return  <TodoList {...props} />
-            }else{
-               console.log('loading....')
-              return <h1 style={{color:'red'}}>loading...</h1>
-            }
-            
-        }}
-        prepareParams={(params, routerProps) => {
-          //here you can return the default route param
-          return { status: 'any' }
-        } }
-        />
-      <Route path=":status"
-        component={TodoList}
-        queries={ViewerQueries}
-        prepareParams={(params, routerProps) => {
-          return params
-        } }
-         render={  ({props, done, error, state})=>{
-            if(error){
-              return <h1> error</h1>
-            }else if(props){
-              return  <TodoList {...props} />
-            }else{
-               console.log('loading....')
-               return <h1 style={{color:'red'}}>loading...</h1>
-            }
-            
-        }}
-        />
-      <Route path="/details/:todoId"
-        component={TodoDetails}
-        queries={TodoQueries}
-        prepareParams={(params, routerProps) => {
-          //auto sync
-          //the route params returns here will 
-          //1. become props to the component
-          //2. if there is a relay query variables that has same property name, 
-          //   the initial vaue of that vairable will be set from route param
-          return {
-               todId_variable: parseInt(params.todoId)
-          }
-        }}
-        />
-    </Route>
+          {/* root route */}
+         <Route path="/"  component={TodoApp}  queries={ViewerQueries} /*root query = root route query  --merge with -- all child route queries*/  > 
+                    {/* child route #0 (index route)*/}
+                    <IndexRoute
+                      component={TodoList}
+                      queries={ViewerQueries}
+                      render={  ({props, done, error, state})=>{
+                          if(error){
+                            return <h1> error</h1>
+                          }else if(props){
+                              console.log('display....')
+                            return  <TodoList {...props} />
+                          }else{
+                            console.log('loading....')
+                            return <h1 style={{color:'red'}}>loading...</h1>
+                          }
+                          
+                      }}
+                      prepareParams={(params, routerProps) => {
+                        //here you can return the default route param
+                        return { status: 'any' }
+                      } }/>
+                           {/* child route #1 */}
+                      <Route path=":status"
+                        component={TodoList}
+                        queries={ViewerQueries } /* this will be part of root query  ---- although it is not in the root route */
+                        prepareParams={(params, routerProps) => {
+                          return params
+                        } }
+                        render={  ({props, done, error, state})=>{
+                            if(error){
+                              return <h1> error</h1>
+                            }else if(props){
+                              return  <TodoList {...props} />
+                            }else{
+                              console.log('loading....')
+                              return <h1 style={{color:'red'}}>loading...</h1>
+                            }
+                            
+                        }}/>
+                          {/* child route #2 */}
+                        <Route path="/details/:todoId"
+                          component={TodoDetails}
+                          queries={TodoQueries}
+                          prepareParams={(params, routerProps) => {
+                            //auto sync
+                            //the route params returns here will 
+                            //1. become props to the component
+                            //2. if there is a relay query variables that has same property name, 
+                            //   the initial vaue of that vairable will be set from route param
+                            return {
+                                todId_variable: parseInt(params.todoId)
+                            }
+                          }}/>
+         </Route>
   </Router>,
   mountNode
 );
