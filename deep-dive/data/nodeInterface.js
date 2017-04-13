@@ -22,7 +22,7 @@ const {nodeInterface, nodeField} = nodeDefinitions(
         //const {type, id} = fromGlobalId(globalId);
         const [type,id] = globalId.split(':')
         if (type === 'Person') {  //should match const PersonType = new GraphQLObjectType({  name: 'Person',
-            return getPerson(id);
+            return getPerson(parseInt(id));
         } else {
             return null;
         }
