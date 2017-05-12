@@ -34,20 +34,23 @@ class Person extends Component {
 
     }
 
-
+    _isDataReady = () => {
+        const { relay, relay: { variables: { countryCode } },
+            relay: { pendingVariables } } = this.props;
+        return !!countryCode && !pendingVariables;
+        //console.log(` relay.varialbes is ${JSON.stringify(relay.variables)}. relay.pendingVariables is ${JSON.stringify(relay.pendingVariables)}`)
+    }
     render() {
 
-        const { viewer, viewer: { person }, relay } = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
+        const { viewer: { person }, relay} = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
 
         //******************************************************************************************
         const countryCode = relay.variables.countryCode; // should always be like this!!
         //******************************************************************************************
-        //console.log(`pending trx: ${JSON.stringify(relay.getPendingTransactions(viewer))}`)
-        console.log(` relay.varialbes is ${JSON.stringify(relay.variables)}. relay.pendingVariables is ${JSON.stringify(relay.pendingVariables)}`)
-        return (
-            <div>
+
+        return ( this._isDataReady() ? <div>
                 <PersonTemplate person={person} countryCode={countryCode} />
-            </div>
+            </div> : <div>loading...</div>
         )
     }
 }
