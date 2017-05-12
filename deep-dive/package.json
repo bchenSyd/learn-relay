@@ -6,10 +6,8 @@
   "scripts": {
     "start-server": "nodemon ./server.js  --exec babel-node",
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
-
     "debug-server": "babel-node ./server.js --source-maps --debug-brk --inspect",
     "debug-server-v2": "node  ./node_modules/babel-cli/bin/babel-node.js  ./server.js --debug-brk --inspect",
-
     "start-client": "webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",
     "start": "npm-run-all --parallel start-server   start-client"
@@ -17,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "antd": "^2.10.0",
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-runtime": "^6.12.0",
@@ -41,7 +40,14 @@
   "devDependencies": {
     "@types/react": "^15.0.2",
     "@types/react-relay": "^0.9.10",
+    "autoprefixer": "^7.0.1",
     "babel-cli": "^6.11.4",
-    "html-webpack-plugin": "^2.24.1"
+    "css-loader": "^0.28.1",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "html-webpack-plugin": "^2.24.1",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.3",
+    "postcss-loader": "^0.13.0",
+    "style-loader": "^0.17.0"
   }
 }

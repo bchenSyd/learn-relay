@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
 import Relay, { createContainer } from 'react-relay'
+import DatePicker from 'antd/lib/date-picker';
+import 'antd/lib/date-picker/style';
+//import '../../styles/date-picker.less';
+import { LocaleProvider } from 'antd';
+import enUS from 'antd/lib/locale-provider/en_US';
 
 // Warning: RelayContainer: component `PersonTemplate` was rendered with variables that differ from the variables used to fetch fragment `person`. 
 // The fragment was fetched with variables `(not fetched)`, but rendered with variables `{}`. This can indicate one of two possibilities: 
@@ -29,6 +34,12 @@ const PersonTemplate = props => {
                     <span>countrycode (redux) --  </span>
                     <span>{countryCode}</span>
                 </div>
+            </div>
+
+            <div>
+                <LocaleProvider locale={enUS}>
+                    <DatePicker />
+                </LocaleProvider>
             </div>
         </div>
     )
