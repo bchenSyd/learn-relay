@@ -7,7 +7,7 @@ const getCountryCodeFromReduxConnect = () => {
 }
 class Person extends Component {
 
-    componentWillMount() {
+    componentDidMount() {
         const { relay } = this.props
         // it's worth mentioning that $status is passed from react-route and doesn't cause a re-fetch
         // it's only untill the NTG component is about to mount that it knows about the country filter
@@ -20,14 +20,25 @@ class Person extends Component {
     componentWillReceiveProps(nextProps) {
         // https://github.com/facebook/relay/issues/1138
         // joseph savona's comment isn't correct. the variables are overriden by parent
-        // todo: if status
+        // [update] the overriding variables from parent doesn't necessarily contains all variables that child has. 
+        // As along as parent passes something to child, all child's previous variables are lost and overridden
+        // [todo:] how about we make a change to only reset child variables that parent has passed in?
+        const { relay, relay: { variables: { status: existingStatus } } } = this.props;
+        const { relay: { variables: { status: newStatus } } } = nextProps;
+        if (existingStatus !== newStatus) { // user has select a different `status`; this will override the country code that it has
+            const countryCode = getCountryCodeFromReduxConnect()
+            relay.setVariables({
+                countryCode
+            })
+        }
+
     }
 
 
     render() {
 
-        const { viewer, viewer:{person}, relay } = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
-        
+        const { viewer, viewer: { person }, relay } = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
+
         //******************************************************************************************
         const countryCode = relay.variables.countryCode; // should always be like this!!
         //******************************************************************************************
