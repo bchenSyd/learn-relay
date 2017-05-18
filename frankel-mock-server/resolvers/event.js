@@ -1,8 +1,8 @@
 import casual from 'casual';
 import { MockList } from 'graphql-tools';
-import getCompetitor from './competitor';
+import competitorResolver from './competitor';
 
-const getEvent = eventId => {
+const eventResolver = eventId => {
     const id = eventId || casual.integer(115300, 115399);
     return {
         id: `event:${id}`,
@@ -14,9 +14,9 @@ const getEvent = eventId => {
         noOfPlacings: casual.integer(1, 3),
         competitors: () => new MockList([5, 10], (parent, args, context) => {
             const { origId } = parent;
-            return getCompetitor(parseInt(origId));
+            return competitorResolver(parseInt(origId));
         })
     }
 };
 
-export default getEvent;
+export default eventResolver;

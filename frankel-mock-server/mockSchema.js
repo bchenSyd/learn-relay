@@ -2,7 +2,7 @@ import { addMockFunctionsToSchema, MockList } from 'graphql-tools';
 import { graphql, buildClientSchema } from 'graphql';
 
 import casual from 'casual';
-import { getEvent } from './sunrise';
+import { eventResolver } from './resolvers';
 
 // step 1: build schema
 //*********************************************************************************
@@ -26,7 +26,7 @@ addMockFunctionsToSchema({
         }),
         Event: (obj, args, context) => {
             let { id } = args;
-            return getEvent(id);
+            return eventResolver(id);
         }
     }
 })
