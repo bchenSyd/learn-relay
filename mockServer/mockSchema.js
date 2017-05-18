@@ -19,19 +19,15 @@ const schema = buildClientSchema(introspectionResult);
 addMockFunctionsToSchema({
     schema,
     mocks: {
-        events: () => {
-            return new MockList([4, 6])
-        },
+        Viewer: () => ({
+            events: () => {
+                return new MockList([2, 6])
+            }
+        }),
         Event: (obj, args, context) => {
             let { id } = args;
-            return getEvent(id || 115353);
-        },
-        Competitor:()=>({
-            id: 9000000 + casual.integer(0,9999),
-            name: casual.word,
-            eventId: 999,
-            eliminated: false
-        })
+            return getEvent(id);
+        }
     }
 })
 
