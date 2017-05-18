@@ -1,5 +1,5 @@
 {
-  "name": "graphql-tools-example",
+  "name": "frankel-mock-server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "debug": "babel-node ./index.js  --source-maps  --debug-brk --inspect",
     "test": "babel-node mockSchema.js"
   },
-  "author": "",
+  "author": "bochen@kindredgroup.com",
   "license": "ISC",
   "dependencies": {
     "babel-cli": "^6.24.1",
