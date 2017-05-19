@@ -18,11 +18,25 @@ casual.define('raceIdentifier', () => {
 });
 
 casual.define('country', () => {
-    return casual.random_element([{ code: 'au', name: 'Australia' },
-    { code: 'nz', name: 'New Zeland' },
-    { code: 'uk' }, { name: 'United Kindom' }]);
-
-})
+    // 'eng-ire-sco-wal', 'aus', 'saf', 'usa', 'can', 'fra', 'uae', 'hk', 'jap', 'sin', 'nz', 'swe', 'deu', 'chi', 'ury', 'arg', 'ita', 'kor'
+    return casual.random_element([
+        { code: 'aus', name: 'Australia' },
+        { code: 'aus', name: 'Australia' },
+        { code: 'aus', name: 'Australia' },
+        { code: 'aus', name: 'Australia' },
+        { code: 'aus', name: 'Australia' },
+        { code: 'aus', name: 'Australia' },
+        { code: 'aus', name: 'Australia' },
+        { code: 'can', name: 'Canada' },
+        { code: 'saf', name: 'South Africa' },
+        { code: 'fra', name: 'France' },
+        { code: 'hk', name: 'HongKong' },
+        { code: 'jap', name: 'Japan' },
+        { code: 'sin', name: 'Singapore' },
+        { code: 'chi', name: 'Chily' },
+        { code: 'eng-ire-sco-wal', name: 'UK & Ireland' }
+    ]);
+});
 
 casual.define('eventStatus', () => casual.random_element(['open2', 'open5', 'open6', 'closed', 'finalised']));
 

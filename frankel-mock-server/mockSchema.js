@@ -2,7 +2,7 @@ import { addMockFunctionsToSchema, MockList } from 'graphql-tools';
 import { graphql, buildClientSchema } from 'graphql';
 
 import casual from 'casual';
-import { eventResolver, raceResolver } from './resolvers';
+import { meetingResolver, eventsResolver, eventResolver, raceResolver, daysResolver } from './resolvers';
 
 // step 1: build schema
 //*********************************************************************************
@@ -19,11 +19,14 @@ const schema = buildClientSchema(introspectionResult.data);
 addMockFunctionsToSchema({
     schema,
     mocks: {
-        Int: ()=> casual.integer(1,10),
+        Int: () => casual.integer(1, 10),
         Viewer: () => ({
-            events: () => new MockList([2, 6]),
-            races: () => new MockList([12, 16])
+            meetings: () => new MockList([20, 30]),
+            events: (parent, args, context)=>  eventsResolver(parent, args, context),
+            races: () => new MockList([12, 16]),
+            days: daysResolver()
         }),
+        Meeting: () => meetingResolver(),
         Event: (obj, args, context) => {
             let { id } = args;
             return eventResolver(id);
