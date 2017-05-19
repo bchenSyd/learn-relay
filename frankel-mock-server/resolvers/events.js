@@ -2,7 +2,7 @@ import { casual } from './utils';
 import { MockList } from 'graphql-tools';
 import { getEventId, getOutComeDateString } from './utils';
 import { marketsResolver, competitorResolver } from './index';
-
+import moment from 'moment';
 
 const eventsResolver = (parent, args, context) => {
     let { id, ids } = args
@@ -31,6 +31,7 @@ const eventResolver = eventId => {
         }),
         dsitance: casual.integer(500, 2000) + 'm',
         outcomeDateString: casual.outcomeDateString,
+        
         markets: marketsResolver(),
         childMarkets: null
     }
