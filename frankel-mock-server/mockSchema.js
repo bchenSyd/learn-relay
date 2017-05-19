@@ -2,7 +2,7 @@ import { addMockFunctionsToSchema, MockList } from 'graphql-tools';
 import { graphql, buildClientSchema } from 'graphql';
 
 import casual from 'casual';
-import { eventResolver } from './resolvers';
+import { eventResolver, raceResolver } from './resolvers';
 
 // step 1: build schema
 //*********************************************************************************
@@ -12,21 +12,24 @@ import { eventResolver } from './resolvers';
 
 //option 2: build schema using introspection
 import * as introspectionResult from './data/schema.json';
-const schema = buildClientSchema(introspectionResult);
+const schema = buildClientSchema(introspectionResult.data);
 //*********************************************************************************
 
 // step 2: mock implementation
 addMockFunctionsToSchema({
     schema,
     mocks: {
+        Int: ()=> casual.integer(1,10),
         Viewer: () => ({
-            events: () => {
-                return new MockList([2, 6])
-            }
+            events: () => new MockList([2, 6]),
+            races: () => new MockList([12, 16])
         }),
         Event: (obj, args, context) => {
             let { id } = args;
             return eventResolver(id);
+        },
+        Race: (obj, args, context) => {
+            return raceResolver();
         }
     }
 })

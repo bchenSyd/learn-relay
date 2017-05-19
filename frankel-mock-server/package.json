@@ -21,6 +21,7 @@
     "express-graphql": "^0.6.5",
     "graphql": "^0.9.6",
     "graphql-tools": "^0.11.0",
+    "moment": "^2.18.1",
     "webpack-dev-server": "^2.4.5"
   }
 }
