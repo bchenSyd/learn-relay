@@ -3,7 +3,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "node2",
+            "type": "node",
+            "protocol": "inspector",
             "request": "launch", //executed per `F5`
             "name": "Launch Program",
             "program": "${workspaceRoot}/node_modules/babel-cli/bin/babel-node.js",
@@ -15,7 +16,8 @@
              "port": 9229
         },
         {
-            "type": "node2",  //must be `node2` for chrome debugger protocal ; `node` for v8 deubgging
+            "type": "node",  //must be `node2` for chrome debugger protocal ; `node` for v8 deubgging
+            "protocol": "inspector",
             "request": "attach",
             "name": "Attach to Process",
             "port": 9229

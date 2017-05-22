@@ -6,13 +6,13 @@
   "scripts": {
     "start-server": "nodemon ./server.js  --exec babel-node",
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",
-
     "debug-server": "babel-node ./server.js --source-maps --debug-brk --inspect",
     "debug-server-v2": "node  ./node_modules/babel-cli/bin/babel-node.js  ./server.js --debug-brk --inspect",
-
     "start-client": "webpack-dev-server --port 3000 --inline",
     "update-schema": "babel-node ./script/generateSchemaJson.js",
-    "start": "npm-run-all --parallel start-server   start-client"
+    "start": "npm-run-all --parallel start-server   start-client",
+    "test": "mocha --compilers js:babel-register --recursive \"component/**/*.spec.js\" --require test/setup.js",
+    "debug-mocha": "mocha --compilers js:babel-register --source-maps  --recursive \"component/**/*.spec.js\" --require test/setup.js --debug-brk --inspect"
   },
   "author": "",
   "license": "ISC",
@@ -42,6 +42,10 @@
     "@types/react": "^15.0.2",
     "@types/react-relay": "^0.9.10",
     "babel-cli": "^6.11.4",
-    "html-webpack-plugin": "^2.24.1"
+    "babel-register": "^6.24.1",
+    "expect": "^1.20.2",
+    "html-webpack-plugin": "^2.24.1",
+    "jsdom": "^11.0.0",
+    "mocha": "^3.4.1"
   }
 }
