@@ -1,11 +1,10 @@
 const path = require('path')
 const webpack = require('webpack')
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 var config = {
     debug:true,
     devtool:'source-map',
-    entry: './index.js',
+    entry: ['whatwg-fetch', path.resolve(__dirname, 'js', 'app.js')],
     output: {
         // easy to understand. where do you want to store the linked [filename] at server side? (client needs to download bundle.js first from server)
         // you will only notice this when you do a build (wds store files in memory)
@@ -20,16 +19,8 @@ var config = {
         // e.g. css-loader needs to handle the `url("imag/greentick.png")`, but where to fetch the png file?
         // the author of `css-loader` may refer to webpack.config.publicPath to figure it out if he/she likes (most don't, which render this configuration meaningless)
         // `wds` also take a hint from it, which is where the [virtual directory] thing comes from
-        publicPath: '/',
         filename: 'bundle.js'
     },
-    plugins: [
-        new HtmlWebpackPlugin({
-            title: 'Learn Relay',
-            filename: 'index.html'
-        })
-    ],
-
     module: {
         loaders: [
             {
@@ -40,7 +31,7 @@ var config = {
     },
     devServer: {
         historyApiFallback: true,
-        proxy: { '/graphql': `http://localhost:8002` },
+        proxy: { '/graphql': `http://localhost:8080` }
     }
 }
 module.exports = config
