@@ -13,7 +13,7 @@ var config = {
         // [virtual directory] say you store the bundle.js in "./foo/bundle.js", what url do you want to allocate for it?
         // http://localhost:8000/foo/bundle.js, or http://localhost:8000/bar/bundle.js, or http://localhost:8000/bundle.js
         // the <script src="url_for_bundle.js"/> need to match this
-        // BUT, is it should be a wds config rather than webpack config??
+        // BUT, is it should be a wds config rather than webpack config?? (wds cli has --content-base which allow to specify directory for '/' which is virtual)
         //                  more thoughts
         // the author of webpack created this `publicPath` property for `loader` providers
         // e.g. css-loader needs to handle the `url("imag/greentick.png")`, but where to fetch the png file?
