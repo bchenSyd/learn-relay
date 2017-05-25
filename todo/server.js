@@ -9,8 +9,6 @@ import {schema} from './data/schema';
 //and as such your old schema.json is used
 import './scripts/updateSchema'
 
-
-const APP_PORT = 3000;
 const GRAPHQL_PORT = 8080;
 // Expose a GraphQL endpoint
 const graphQLServer = express();

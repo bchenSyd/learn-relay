@@ -9,7 +9,7 @@ import { schema } from './data/schema';
 import './scripts/updateSchema'
 //however you don't have to explicitly call the generateSchemaJSON method, as it's automatically 
 //callel everytime the file is loaded (node loads that module)
-const GRAPHQL_PORT = 8080;
+const GRAPHQL_PORT = 8081;
 
 // Expose a GraphQL endpoint
 const graphQLServer = express();

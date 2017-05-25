@@ -4,7 +4,7 @@
     "start-server": "nodemon  ./server.js  --exec babel-node",
     "debug-server": "babel-node ./server.js  --source-maps --debug-brk --inspect",
     "debug-server-v2": "node  ./node_modules/babel-cli/bin/babel-node.js  ./server.js --debug-brk --inspect",
-    "start-client": "webpack-dev-server --port 3000 --inline  --content-base public",
+    "start-client": "webpack-dev-server --port 8000 --inline  --content-base public",
     "start": "npm-run-all --parallel start-server start-client"
   },
   "dependencies": {
