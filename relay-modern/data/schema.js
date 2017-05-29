@@ -48,9 +48,11 @@ import {
   renameTodo,
 } from './database';
 
-const {nodeInterface, nodeField} = nodeDefinitions(
+import { globalIdField_unibet, fromGlobalId_unibet} from './unibetIds';
+
+const { nodeInterface, nodeField } = nodeDefinitions(
   (globalId) => {
-    const {type, id} = fromGlobalId(globalId);
+    const { type, id } = fromGlobalId_unibet(globalId);
     if (type === 'Todo') {
       return getTodo(id);
     } else if (type === 'User') {
@@ -71,7 +73,7 @@ const {nodeInterface, nodeField} = nodeDefinitions(
 const GraphQLTodo = new GraphQLObjectType({
   name: 'Todo',
   fields: {
-    id: globalIdField('Todo'),
+    id: globalIdField_unibet('Todo'),
     text: {
       type: GraphQLString,
       resolve: (obj) => obj.text,
@@ -88,14 +90,14 @@ const {
   connectionType: TodosConnection,
   edgeType: GraphQLTodoEdge,
 } = connectionDefinitions({
-  name: 'Todo',
-  nodeType: GraphQLTodo,
-});
+    name: 'Todo',
+    nodeType: GraphQLTodo,
+  });
 
 const GraphQLUser = new GraphQLObjectType({
   name: 'User',
   fields: {
-    id: globalIdField('User'),
+    id: globalIdField_unibet('User'),
     todos: {
       type: TodosConnection,
       args: {
@@ -105,7 +107,7 @@ const GraphQLUser = new GraphQLObjectType({
         },
         ...connectionArgs,
       },
-      resolve: (obj, {status, ...args}) =>
+      resolve: (obj, { status, ...args }) =>
         connectionFromArray(getTodos(status), args),
     },
     totalCount: {
@@ -139,7 +141,7 @@ const GraphQLAddTodoMutation = mutationWithClientMutationId({
   outputFields: {
     todoEdge: {
       type: GraphQLTodoEdge,
-      resolve: ({localTodoId}) => {
+      resolve: ({ localTodoId }) => {
         const todo = getTodo(localTodoId);
         return {
           cursor: cursorForObjectInConnection(getTodos(), todo),
@@ -152,9 +154,9 @@ const GraphQLAddTodoMutation = mutationWithClientMutationId({
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({text}) => {
+  mutateAndGetPayload: ({ text }) => {
     const localTodoId = addTodo(text);
-    return {localTodoId};
+    return { localTodoId };
   },
 });
 
@@ -167,17 +169,17 @@ const GraphQLChangeTodoStatusMutation = mutationWithClientMutationId({
   outputFields: {
     todo: {
       type: GraphQLTodo,
-      resolve: ({localTodoId}) => getTodo(localTodoId),
+      resolve: ({ localTodoId }) => getTodo(localTodoId),
     },
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({id, complete}) => {
-    const localTodoId = fromGlobalId(id).id;
+  mutateAndGetPayload: ({ id, complete }) => {
+    const localTodoId = fromGlobalId_unibet(id).id;
     changeTodoStatus(localTodoId, complete);
-    return {localTodoId};
+    return { localTodoId };
   },
 });
 
@@ -189,16 +191,16 @@ const GraphQLMarkAllTodosMutation = mutationWithClientMutationId({
   outputFields: {
     changedTodos: {
       type: new GraphQLList(GraphQLTodo),
-      resolve: ({changedTodoLocalIds}) => changedTodoLocalIds.map(getTodo),
+      resolve: ({ changedTodoLocalIds }) => changedTodoLocalIds.map(getTodo),
     },
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({complete}) => {
+  mutateAndGetPayload: ({ complete }) => {
     const changedTodoLocalIds = markAllTodos(complete);
-    return {changedTodoLocalIds};
+    return { changedTodoLocalIds };
   },
 });
 
@@ -208,7 +210,7 @@ const GraphQLRemoveCompletedTodosMutation = mutationWithClientMutationId({
   outputFields: {
     deletedTodoIds: {
       type: new GraphQLList(GraphQLString),
-      resolve: ({deletedTodoIds}) => deletedTodoIds,
+      resolve: ({ deletedTodoIds }) => deletedTodoIds,
     },
     viewer: {
       type: GraphQLUser,
@@ -218,7 +220,7 @@ const GraphQLRemoveCompletedTodosMutation = mutationWithClientMutationId({
   mutateAndGetPayload: () => {
     const deletedTodoLocalIds = removeCompletedTodos();
     const deletedTodoIds = deletedTodoLocalIds.map(toGlobalId.bind(null, 'Todo'));
-    return {deletedTodoIds};
+    return { deletedTodoIds };
   },
 });
 
@@ -230,17 +232,17 @@ const GraphQLRemoveTodoMutation = mutationWithClientMutationId({
   outputFields: {
     deletedTodoId: {
       type: GraphQLID,
-      resolve: ({id}) => id,
+      resolve: ({ id }) => id,
     },
     viewer: {
       type: GraphQLUser,
       resolve: () => getViewer(),
     },
   },
-  mutateAndGetPayload: ({id}) => {
-    const localTodoId = fromGlobalId(id).id;
+  mutateAndGetPayload: ({ id }) => {
+    const localTodoId = fromGlobalId_unibet(id).id;
     removeTodo(localTodoId);
-    return {id};
+    return { id };
   },
 });
 
@@ -253,13 +255,13 @@ const GraphQLRenameTodoMutation = mutationWithClientMutationId({
   outputFields: {
     todo: {
       type: GraphQLTodo,
-      resolve: ({localTodoId}) => getTodo(localTodoId),
+      resolve: ({ localTodoId }) => getTodo(localTodoId),
     },
   },
-  mutateAndGetPayload: ({id, text}) => {
-    const localTodoId = fromGlobalId(id).id;
+  mutateAndGetPayload: ({ id, text }) => {
+    const localTodoId = fromGlobalId_unibet(id).id;
     renameTodo(localTodoId, text);
-    return {localTodoId};
+    return { localTodoId };
   },
 });
 
