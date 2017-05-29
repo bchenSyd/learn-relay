@@ -48,7 +48,7 @@ import {
   renameTodo,
 } from './database';
 
-import { globalIdField_unibet, fromGlobalId_unibet} from './unibetIds';
+import { globalIdField_unibet, fromGlobalId_unibet } from './unibetIds';
 
 const { nodeInterface, nodeField } = nodeDefinitions(
   (globalId) => {
@@ -126,8 +126,16 @@ const Query = new GraphQLObjectType({
   name: 'Query',
   fields: {
     viewer: {
-      type: GraphQLUser,
-      resolve: () => getViewer(),
+      type: new GraphQLObjectType({
+        name: 'Viewer', // this will trigger viewerhandler
+        fields: {
+          user: {
+            type: GraphQLUser,
+            resolve: () => getViewer()
+          }
+        }
+      }),
+      resolve: () => ({}),
     },
     node: nodeField,
   },

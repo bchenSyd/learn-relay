@@ -63,7 +63,7 @@ type PageInfo {
 }
 
 type Query {
-  viewer: User
+  viewer: Viewer
 
   # Fetches an object given its ID
   node(
@@ -135,4 +135,8 @@ type User implements Node {
   todos(status: String = "any", after: String, first: Int, before: String, last: Int): TodoConnection
   totalCount: Int
   completedCount: Int
+}
+
+type Viewer {
+  user: User
 }

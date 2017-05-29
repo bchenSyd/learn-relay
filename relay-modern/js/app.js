@@ -45,14 +45,16 @@ ReactDOM.render(
     query={graphql`
       query appQuery {
         viewer {
-          ...TodoApp_viewer
+          user{
+               ...TodoApp_viewer 
+            }
         }
       }
     `}
     variables={{}}
-    render={({error, props}) => {
+    render={({ error, props }) => {
       if (props) {
-        return <TodoApp viewer={props.viewer} />;
+        return <TodoApp viewer={props.viewer.user} />;
       } else {
         return <div>Loading</div>;
       }
