@@ -22,7 +22,7 @@ import {
   graphql,
 } from 'react-relay';
 
-class TodoList extends React.Component<any,any> {
+class TodoList extends React.Component<any,any,any> {
   constructor() {
     super()
     this.state = {
