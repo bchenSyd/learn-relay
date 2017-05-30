@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "build": "relay-compiler --src ./js/ --schema ./data/schema.graphql  --extensions js jsx tsx --watch",
+    "build": "relay-compiler --src ./js/ --schema ./data/schema.graphql  --extensions js jsx tsx",
     "debug-build": "node --debug-brk --inspect ./node_modules/relay-compiler/bin/relay-compiler --src ./js/ --schema ./data/schema.graphql  --extensions js jsx tsx --watch",
     "start-server": "nodemon ./server.js  --exec babel-node",
     "start-server-v2": "nodemon ./server.js  --exec babel-node  --watch data --ignore  data/schema.json --ignore data/schema.graphql",

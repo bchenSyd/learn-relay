@@ -1,3 +1,23 @@
+# re-compile
+```
+find . -name __generated__ -exec rm -rf {} \;
+```
+make sure watchman.exe is killed from explorer
+```
+D:\__work\relay\packages\relay-compiler\codegen\RelayCodegenWatcher.js
+const watchman = require('fb-watchman');
+
+class PromiseClient {
+  _client: any;
+
+  constructor() {
+    this._client = new watchman.Client();
+  }
+
+```
+
+
+# source 
 ```
 RelayNetwork.js 
 
