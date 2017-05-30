@@ -1,9 +1,8 @@
 [ignore]
 .*/__tests__/.*
 <PROJECT_ROOT>/public/.*
-<PROJECT_ROOT>/node_modules/react/node_modules/.*
-<PROJECT_ROOT>/node_modules/react-dom/node_modules/.*
-<PROJECT_ROOT>/node_modules/react-static-container/node_modules/.*
+<PROJECT_ROOT>/node_modules/.*
+.*/__generated__/.*
 
 [libs]
 node_modules/fbjs/flow/lib

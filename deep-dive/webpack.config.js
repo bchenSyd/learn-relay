@@ -40,7 +40,7 @@ var config = {
     },
     devServer: {
         historyApiFallback: true,
-        proxy: { '/graphql': `http://localhost:8002` },
+        proxy: { '/graphql': `http://localhost:8080` },
     }
 }
 module.exports = config

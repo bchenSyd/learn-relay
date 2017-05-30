@@ -5,10 +5,11 @@ import {
     graphql
 } from 'react-relay'
 
-const Todo2 = () => {
+const Todo2 = ({todo}) => {
+    const {additional} = todo
     return (
         <div>
-
+            <h2>{additional}</h2>
         </div>
     );
 };

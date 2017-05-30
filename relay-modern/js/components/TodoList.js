@@ -22,8 +22,13 @@ import {
   graphql,
 } from 'react-relay';
 
-class TodoList extends React.Component {
-
+class TodoList extends React.Component<any,any> {
+  constructor() {
+    super()
+    this.state = {
+      isNormalView: true
+    };
+  }
   _handleMarkAllChange = (e) => {
     const complete = e.target.checked;
     MarkAllTodosMutation.commit(
@@ -34,7 +39,7 @@ class TodoList extends React.Component {
     );
   };
   renderTodos() {
-    const isNormalView = true;
+    const {isNormalView} = this.state
     return this.props.viewer.todos.edges.map(edge => {
       return isNormalView ? <Todo
         key={edge.node.id}
@@ -49,11 +54,9 @@ class TodoList extends React.Component {
     });
   }
   _onSwitchView = e => {
-    const {relay} = this.props;
-    const refetchVariables = (vars: { isNormalView: boolean }) => ({
-      isNormalView: !vars.isNormalView
-    })
-    relay.refetch(refetchVariables, null)
+    const { isNormalView } = this.state;
+    this.props.relay.refetch({ isNormalView: !isNormalView }, null)
+    this.setState({ isNormalView: !isNormalView })
   }
   render() {
     const numTodos = this.props.viewer.totalCount;
@@ -97,7 +100,7 @@ export default createRefetchContainer(TodoList,
               node {
                 id,
                 complete,
-                ...Todo_todo @include(if: $isNormalView),
+                ...Todo_todo  @include(if: $isNormalView),
                 ...Todo2_todo @skip(if: $isNormalView),
               },
             },
