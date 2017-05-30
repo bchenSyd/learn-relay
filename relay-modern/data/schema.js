@@ -82,6 +82,10 @@ const GraphQLTodo = new GraphQLObjectType({
       type: GraphQLBoolean,
       resolve: (obj) => obj.complete,
     },
+    additional:{
+      type:GraphQLString,
+      resolve:()=> `random string ${Math.floor(Math.random() * 100)} `
+    }
   },
   interfaces: [nodeInterface],
 });

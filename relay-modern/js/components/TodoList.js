@@ -8,18 +8,22 @@
  * FACEBOOK BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * @flow
  */
 
 import MarkAllTodosMutation from '../mutations/MarkAllTodosMutation';
 import Todo from './Todo';
+import Todo2 from './Todo2';
 
 import React from 'react';
 import {
-  createFragmentContainer,
+  createRefetchContainer,
   graphql,
 } from 'react-relay';
 
 class TodoList extends React.Component {
+
   _handleMarkAllChange = (e) => {
     const complete = e.target.checked;
     MarkAllTodosMutation.commit(
@@ -30,13 +34,26 @@ class TodoList extends React.Component {
     );
   };
   renderTodos() {
-    return this.props.viewer.todos.edges.map(edge =>
-      <Todo
+    const isNormalView = true;
+    return this.props.viewer.todos.edges.map(edge => {
+      return isNormalView ? <Todo
         key={edge.node.id}
         todo={edge.node}
         viewer={this.props.viewer}
-      />
-    );
+      /> :
+        <Todo2
+          key={edge.node.id}
+          todo={edge.node}
+          viewer={this.props.viewer}
+        />
+    });
+  }
+  _onSwitchView = e => {
+    const {relay} = this.props;
+    const refetchVariables = (vars: { isNormalView: boolean }) => ({
+      isNormalView: !vars.isNormalView
+    })
+    relay.refetch(refetchVariables, null)
   }
   render() {
     const numTodos = this.props.viewer.totalCount;
@@ -55,29 +72,48 @@ class TodoList extends React.Component {
         <ul className="todo-list">
           {this.renderTodos()}
         </ul>
+        <div>
+          <button onClick={this._onSwitchView}>Switch View</button>
+        </div>
       </section>
     );
   }
 }
 
-export default createFragmentContainer(TodoList, {
-  viewer: graphql`
-    fragment TodoList_viewer on User {
-      todos(
-        first: 2147483647  # max GraphQLInt
-      ) @connection(key: "TodoList_todos") {
-        edges {
-          node {
-            id,
-            complete,
-            ...Todo_todo,
+export default createRefetchContainer(TodoList,
+  graphql.experimental`
+    fragment TodoList_viewer on User
+        @argumentDefinitions( 
+          isNormalView:{
+            type:"Boolean!",
+            defaultValue:true
+           }
+        )
+          {
+          todos(
+            first: 2147483647  # max GraphQLInt
+          ) @connection(key: "TodoList_todos") {
+            edges {
+              node {
+                id,
+                complete,
+                ...Todo_todo @include(if: $isNormalView),
+                ...Todo2_todo @skip(if: $isNormalView),
+              },
+            },
           },
-        },
-      },
-      id,
-      totalCount,
-      completedCount,
-      ...Todo_viewer,
-    }
+          id,
+          totalCount,
+          completedCount,
+          ...Todo_viewer,
+        }
   `,
-});
+  graphql.experimental`
+  query TodoListViewRefetchQuery($isNormalView: Boolean!){
+    viewer{
+      user{
+           ...TodoList_viewer @arguments(isNormalView: $isNormalView) 
+        }
+      }
+  }`
+);
