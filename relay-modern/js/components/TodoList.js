@@ -39,21 +39,8 @@ class TodoList extends React.Component<any,any,any> {
     );
   };
   renderTodos() {
-    //const isNormalView = true;
-    const {variables:{isNormalView}} = this.props.relay
-    console.log(`*** isNormalView ? ${isNormalView}`)
-    return this.props.viewer.todos.edges.map(edge => {
-      return isNormalView ? <Todo
-        key={edge.node.id}
-        todo={edge.node}
-        viewer={this.props.viewer}
-      /> :
-        <Todo2
-          key={edge.node.id}
-          todo={edge.node}
-          viewer={this.props.viewer}
-        />
-    });
+  const test = this.props.relay.getVariables();
+   return <h1>hello,world!</h1>
     
   }
   _onSwitchView = e => {
