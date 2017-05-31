@@ -33,6 +33,7 @@ class TodoApp extends React.Component {
     const hasTodos = this.props.viewer.totalCount > 0;
     return (
       <div>
+        <button onClick={() => { this.forceUpdate() }}>forceUpdate</button>
         <section className="todoapp">
           <header className="header">
             <h1>
