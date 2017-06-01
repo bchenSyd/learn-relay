@@ -22,13 +22,8 @@ import {
   graphql,
 } from 'react-relay';
 
-class TodoList extends React.Component<any,any,any> {
-  constructor() {
-    super()
-    this.state = {
-      isNormalView: true
-    };
-  }
+class TodoList extends React.Component<any, any, any> {
+  hidden: Object = {};
   _handleMarkAllChange = (e) => {
     const complete = e.target.checked;
     MarkAllTodosMutation.commit(
@@ -39,7 +34,7 @@ class TodoList extends React.Component<any,any,any> {
     );
   };
   renderTodos() {
-    const {isNormalView} = this.state
+    const isNormalView = (!this.hidden.dataset /*initial render*/) || this.hidden.dataset.isnormalview === 'true' /* user switched back*/;
     return this.props.viewer.todos.edges.map(edge => {
       return isNormalView ? <Todo
         key={edge.node.id}
@@ -54,15 +49,24 @@ class TodoList extends React.Component<any,any,any> {
     });
   }
   _onSwitchView = e => {
-    const { isNormalView } = this.state;
-    this.props.relay.refetch({ isNormalView: !isNormalView }, null)
-    this.setState({ isNormalView: !isNormalView })
+    // i'm using ref becuase 
+    // 1. can't change props  2. set state will cause a re-render which I don't want
+    const currentRefState = this.hidden.dataset.isnormalview
+    const isNormalView: boolean = currentRefState === 'true';
+    this.props.relay.refetch({isNormalView: !isNormalView}, null, () => {
+      // relay will first execute refetch callback, then call setState internally;
+      // so your callback is executed before the resulting re-render
+      this.hidden.dataset.isnormalview = (!isNormalView).toString();
+      console.log(`refetch is down with isNormalView = ${!isNormalView}`)
+    })
+
   }
   render() {
     const numTodos = this.props.viewer.totalCount;
     const numCompletedTodos = this.props.viewer.completedCount;
     return (
       <section className="main">
+
         <input
           checked={numTodos === numCompletedTodos}
           className="toggle-all"
@@ -77,6 +81,8 @@ class TodoList extends React.Component<any,any,any> {
         </ul>
         <div>
           <button onClick={this._onSwitchView}>Switch View</button>
+          {/*  the callback will be executed immediately after the component is mounted or unmounted  */}
+          <input type="hidden" data-isnormalview="true" ref={ref => this.hidden = ref} />
         </div>
       </section>
     );
