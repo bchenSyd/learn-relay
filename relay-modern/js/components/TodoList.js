@@ -51,13 +51,13 @@ class TodoList extends React.Component<any, any, any> {
   _onSwitchView = e => {
     // i'm using ref becuase 
     // 1. can't change props  2. set state will cause a re-render which I don't want
-    const currentRefState = this.hidden.dataset.isnormalview
+    const currentRefState = this.hidden.dataset.isnormalview;
     const isNormalView: boolean = currentRefState === 'true';
-    this.props.relay.refetch({isNormalView: !isNormalView}, null, () => {
+    this.props.relay.refetch({ isNormalView: !isNormalView }, null, () => {
       // relay will first execute refetch callback, then call setState internally;
       // so your callback is executed before the resulting re-render
       this.hidden.dataset.isnormalview = (!isNormalView).toString();
-      console.log(`refetch is down with isNormalView = ${!isNormalView}`)
+      console.log(`refetch is down with isNormalView = ${(!isNormalView).toString()}`);
     })
 
   }
