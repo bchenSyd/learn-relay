@@ -143,3 +143,13 @@ class PromiseClient {
   }
   ```
 
+#flow
+how does flow work? what is the flow syntax transpiler?  -- answer is babel
+can't work without babel
+```
+$ npm ls babel-preset-flow
+D:\learn-relay\relay-modern
+`-- babel-preset-react@6.24.1
+  `-- babel-preset-flow@6.23.0
+
+```
