@@ -1,22 +1,24 @@
 // @flow
 import React from 'react';
 import {
-    createFragmentContainer,
-    graphql
-} from 'react-relay'
+  createFragmentContainer,
+  graphql,
+} from 'react-relay';
 
-const Todo2 = ({todo}) => {
-    const {additional} = todo
-    return (
-        <div>
-            <h2>{additional}</h2>
-        </div>
-    );
+const Todo2 = ({ todo }) => {
+  const { text, additional } = todo;
+  return (
+    <div>
+      <span>{text + '--' + additional}</span>
+      <span><button>view comments</button></span>
+    </div>
+  );
 };
 
 
 export default createFragmentContainer(Todo2,
-    graphql`fragment Todo2_todo on Todo{
+  graphql`fragment Todo2_todo on Todo{
     id
+    text
     additional
 }`);

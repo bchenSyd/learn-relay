@@ -110,6 +110,7 @@ type Todo implements Node {
   text: String
   complete: Boolean
   additional: String
+  comments: String
 }
 
 # A connection to a list of items.

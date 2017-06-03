@@ -79,7 +79,7 @@ class TodoList extends React.Component<any, any, any> {
         <ul className="todo-list">
           {this.renderTodos()}
         </ul>
-        <div>
+        <div style={{marginTop:'20px'}}>
           <button onClick={this._onSwitchView}>Switch View</button>
           {/*  the callback will be executed immediately after the component is mounted or unmounted  */}
           <input type="hidden" data-isnormalview="true" ref={ref => this.hidden = ref} />

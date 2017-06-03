@@ -82,10 +82,14 @@ const GraphQLTodo = new GraphQLObjectType({
       type: GraphQLBoolean,
       resolve: (obj) => obj.complete,
     },
-    additional:{
-      type:GraphQLString,
-      resolve:()=> `random string ${Math.floor(Math.random() * 100)} `
-    }
+    additional: {
+      type: GraphQLString,
+      resolve: () => `additional #${Math.floor(Math.random() * 100)} `,
+    },
+    comments: {
+      type: GraphQLString,
+      resolve:() => `comments #${Math.floor(Math.random() * 100)} `
+    },
   },
   interfaces: [nodeInterface],
 });
@@ -135,9 +139,9 @@ const Query = new GraphQLObjectType({
         fields: {
           user: {
             type: GraphQLUser,
-            resolve: () => getViewer()
-          }
-        }
+            resolve: () => getViewer(),
+          },
+        },
       }),
       resolve: () => ({}),
     },
