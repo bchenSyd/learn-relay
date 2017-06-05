@@ -1,4 +1,9 @@
 {
+  "_readme": [
+    "npm ls source-map-supoort you will find:",
+    "babel-register is added via babel-cli",
+    "source-map-support is added via babel-register"
+  ],
   "name": "muck_around",
   "version": "1.0.0",
   "description": "bo chen's muck around with graphQL",
@@ -12,7 +17,7 @@
     "update-schema": "babel-node ./script/generateSchemaJson.js",
     "start": "npm-run-all --parallel start-server   start-client",
     "test": "mocha --compilers js:babel-register --recursive \"component/**/*.spec.js\" --require test/setup.js",
-    "debug-mocha": "mocha --compilers js:babel-register --source-maps  --recursive \"component/**/*.spec.js\" --require test/setup.js --debug-brk --inspect"
+    "debug-mocha": "mocha --compilers js:babel-register --recursive \"component/**/*.spec.js\" --require test/setup.js --debug-brk --inspect"
   },
   "author": "",
   "license": "ISC",
