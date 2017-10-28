@@ -2,10 +2,7 @@ import React from 'react'
 import Relay from 'react-relay/classic'
 import SearchContainer from './Containers/SearchContainer'
 
-const default_status = 'in_progress'
 let App = (props) => {
-
-    console.log(` *****************   the param:status passe from route  is ${props.status} `)
     return (
         <div id='app'>
             <div id='relay-stores'>
@@ -23,7 +20,7 @@ let App = (props) => {
                    becuase you have   ${SearchContainer.getFragment('viewer', variables)} which override SearchContainer's default variables
                 //source code see: D:\__work\relay-digest\container\RelayContainer.ts line:540
            */}
-            <SearchContainer  viewer={props.viewer}    relay={props.relay}  status={props.status}/>
+            <SearchContainer  viewer={props.viewer}  status={props.status}/>
         </div>
     );
 };
@@ -32,7 +29,7 @@ App = Relay.createContainer(App, {
     //!critical
     //below line is also requied. Relay will  sync   [pram  in Route.paramDefinitions]   with   [ varaibles declared in Component.initialVariables]
     initialVariables: {
-        status: 'any'
+        status: 'anyxyz-doesnot-matter'
     },
 
     fragments: {

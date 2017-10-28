@@ -6,7 +6,12 @@ import Person from './Person'
 
 
 class SearchContainer extends Component {
-
+    constructor() {
+        super()
+        this.state = {
+            selectedStatus: 'any'
+        }
+    }
     _onMutate = event => {
         const { relay, viewer } = this.props
         relay.commitUpdate(
@@ -14,21 +19,6 @@ class SearchContainer extends Component {
             // if you don't include Person Component's fragment in Person's fragment builder, you get the same warning 
             new increamentCounter({ viewer: viewer })
         )
-    }
-
-    // npm install --save-dev babel-plugin-transform-class-properties
-    _onSearch = (event) => {
-        const { relay } = this.props
-        // !! I could have 2 children <div> <Person /> <Person/> </div>
-        // each <Person /> could have different fragment variables;
-        //     remember Query is static, a Query contains fragment which is also static; but fragment variables is per instance
-        // now when parent start calling setVariables, and because its fragment referenced child fragment, we need to work out child variables
-        // but we couldn't becuase we have 2 different ones
-        // that's why parent has to override child variables , but this is only to be limited to the case where parent has choosen to do Fragment Override
-        // more, see: https://github.com/facebook/relay/issues/1138
-        relay.setVariables({
-            status: event.target.value
-        })
     }
 
     _displayPendingMutation = () => {
@@ -54,11 +44,28 @@ class SearchContainer extends Component {
         }
     }
 
+    onStatusChange = (event) => {
+        const { value } = event.target;
+        this.setState({
+            selectedStatus: value,
+        })
+        const { relay } = this.props
+        // !! I could have 2 children <div> <Person /> <Person/> </div>
+        // each <Person /> could have different fragment variables;
+        //     remember Query is static, a Query contains fragment which is also static; but fragment variables is per instance
+        // now when parent start calling setVariables, and because its fragment referenced child fragment, we need to work out child variables
+        // but we couldn't becuase we have 2 different ones
+        // that's why parent has to override child variables , but this is only to be limited to the case where parent has choosen to do Fragment Override
+        // more, see: https://github.com/facebook/relay/issues/1138
+        relay.setVariables({
+            status: value,
+        })
+    }
     render() {
         const { viewer, viewer: { counter }, relay } = this.props
 
         // to hand on fragment to child components
-        const { variables: { status } } = relay
+        const { selectedStatus } = this.state;
         return (<div>
             <div style={{ marginTop: 40 }}>
                 {/* handle mutation*/}
@@ -67,18 +74,19 @@ class SearchContainer extends Component {
                 <button onClick={this._onMutate.bind(this)} >Mutation</button>
             </div>
 
-
             <div style={{ marginTop: 40, borderTop: 'solid 1px grey' }}>
                 {this._displayPendingQuery()}
                 <div>
-                    <select name='person_filter_dp' value={status} onChange={this._onSearch} >
+                    <select name='person_filter_dp' 
+                            value={selectedStatus} 
+                            onChange={this.onStatusChange} >
                         <option value='any'>Any</option>
                         <option value='open'>Open</option>
                         <option value='in_progress'>In Progress</option>
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
-                <Person viewer={viewer} status={status} />
+                <Person viewer={viewer} status={selectedStatus} />
             </div>
         </div>)
     }

@@ -43,6 +43,9 @@ const getPerson = id => {
 
 const getPersonFromStatus = ({status, countryCode}) => {
     const result = person_db.find(p => p.status === status)
+    if(!result){
+        return null
+    }
     result.countryCode = countryCode
     return result
 }
