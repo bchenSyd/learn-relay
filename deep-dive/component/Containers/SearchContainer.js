@@ -99,7 +99,7 @@ class SearchContainer extends Component {
 
 export default Relay.createContainer(SearchContainer, {
     initialVariables: {
-        status: 'invalid' // to be overidden by react-router
+        status: 'invalidxxx' // to be overidden by react-router
     },
     fragments: {
         viewer: (variables) => Relay.QL`
