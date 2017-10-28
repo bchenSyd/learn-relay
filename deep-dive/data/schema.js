@@ -25,7 +25,7 @@ const store = new Store()  //single tone; global instance;
 //********************************** */
 
 
-const status_array = ['any', 'in_progress', 'passed']
+const status_array = ['any', 'open', 'in_progress', 'passed']
 status_array.forEach((s, index) => {
     const person = new Person();
     person.id=index;

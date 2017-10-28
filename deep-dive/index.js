@@ -1,6 +1,6 @@
 import React from 'react'
 import { render } from 'react-dom'
-import Relay, { Route } from 'react-relay'
+import Relay, { Route } from 'react-relay/classic'
 import App from './component/app'
 
 class HomeRoute extends Route {

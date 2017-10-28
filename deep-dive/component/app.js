@@ -1,5 +1,5 @@
 import React from 'react'
-import Relay from 'react-relay'
+import Relay from 'react-relay/classic'
 import SearchContainer from './Containers/SearchContainer'
 
 const default_status = 'in_progress'

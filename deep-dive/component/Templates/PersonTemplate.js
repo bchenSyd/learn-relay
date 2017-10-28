@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Relay, { createContainer } from 'react-relay'
+import Relay, { createContainer } from 'react-relay/classic'
 
 // Warning: RelayContainer: component `PersonTemplate` was rendered with variables that differ from the variables used to fetch fragment `person`. 
 // The fragment was fetched with variables `(not fetched)`, but rendered with variables `{}`. This can indicate one of two possibilities: 

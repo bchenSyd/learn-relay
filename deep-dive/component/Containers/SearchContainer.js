@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Relay from 'react-relay'
+import Relay from 'react-relay/classic'
 
 import increamentCounter from '../../mutation/increamentCounterMutation'
 import Person from './Person'
@@ -55,19 +55,10 @@ class SearchContainer extends Component {
     }
 
     render() {
-        /*
-        after you call relay.setVarialbes(), relayContainer.onReadyStateChange will called multiple times during the fetch process
-        everytime RelayContainer.onReadyStateChanged() is called, your component gets re-rendered(), sometimes unnecessarily
-        ideally, the render() method should only get called 2 times after a setVariables()
-        1. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes (NETWORK_START)
-            1.1. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes  (unnecessarily) why??
-            1.2. ready == false, variables = initial varialbes,  pendingVariables = new setVarialbes  (unnecessarily) why??
-        2. ready == true,  variables = new variables ,     pendingVarialbes = null (NETWORK_RECEIVED_ALL)
-         */
-        const { viewer, viewer: { counter}, relay } = this.props
+        const { viewer, viewer: { counter }, relay } = this.props
 
         // to hand on fragment to child components
-        const { variables: { status }, pendingVariables } = relay
+        const { variables: { status } } = relay
         return (<div>
             <div style={{ marginTop: 40 }}>
                 {/* handle mutation*/}
@@ -78,20 +69,16 @@ class SearchContainer extends Component {
 
 
             <div style={{ marginTop: 40, borderTop: 'solid 1px grey' }}>
-                {/* handle search*/}
                 {this._displayPendingQuery()}
                 <div>
-                    <select name='person_filter_dp' value={status} onChange={this._onSearch /* auto bind*/} >
+                    <select name='person_filter_dp' value={status} onChange={this._onSearch} >
                         <option value='any'>Any</option>
+                        <option value='open'>Open</option>
                         <option value='in_progress'>In Progress</option>
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
-
-            
-                {/* pass relay.variables.status to child component*/}
-                <Person viewer={viewer} status={status} relay={relay}/>
-
+                <Person viewer={viewer} status={status} />
             </div>
         </div>)
     }

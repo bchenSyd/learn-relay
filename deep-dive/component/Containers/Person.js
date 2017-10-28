@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Relay from 'react-relay'
+import Relay from 'react-relay/classic'
 import PersonTemplate from '../Templates/PersonTemplate'
 
 const getCountryCodeFromReduxConnect = () => {
@@ -42,12 +42,10 @@ class Person extends Component {
     }
     render() {
 
-        const { viewer: { person }, relay} = this.props // should be const {person, countryCode} = this.props; but since we are not connecting to redux
-
+        const { viewer: { person }, relay} = this.props
         //******************************************************************************************
         const countryCode = relay.variables.countryCode; // should always be like this!!
         //******************************************************************************************
-
         return ( this._isDataReady() ? <div>
                 <PersonTemplate person={person} countryCode={countryCode} />
             </div> : <div>loading...</div>
