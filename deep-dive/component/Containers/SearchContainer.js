@@ -37,7 +37,7 @@ class SearchContainer extends Component {
 
     _displayPendingQuery = () => {
         const { variables: { status }, pendingVariables } = this.props.relay
-        if (pendingVariables && 'status' in pendingVariables) {
+        if (pendingVariables && 'status' in pendingVariables) { // 'a' in {a:'1'} returns true
             return <h2>RelayContainer.setVariables()=> this.context.relay.environment.primeCache(callback= relayContainer.onReadyStateChange) =>
                         StoreData.getQueryRunner => GraphqlQueryRunner.run => GraphqlQueryRunner.runQueryies => RelayNetworkLayer...</h2>
 
@@ -70,7 +70,7 @@ class SearchContainer extends Component {
 
     isLoading2 = () => {
         const { relay: { variables, pendingVariables } } = this.props
-        return !!pendingVariables && 'status' in pendingVariables;
+        return !!pendingVariables && 'status' in pendingVariables; // 'a' in {a:'1'} returns true
     }
 
     render() {

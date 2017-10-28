@@ -1,0 +1,2 @@
+1. `searchContainer` called `setVarialbes()` so `seacherContainer` should do `pendingVariables i.e. isloading` check
+2. `searchContainer` called `setVarialbes()` so `<SearchContainer viewer={viewer} status={newStatus} relay={props.realy} />` is required
