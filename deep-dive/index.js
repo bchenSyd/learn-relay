@@ -17,7 +17,7 @@ class HomeRoute extends Route {
            this is the inspiration for anil to sync normal props with query variables in Unibet's verison of relay container
     */
     static prepareParams = previousParams => ({
-        status:`passed`
+        status:`any`
     })
     static queries = {
         // **********************   Queries supplied at the root should contain exactly one fragment and no fields  *********************

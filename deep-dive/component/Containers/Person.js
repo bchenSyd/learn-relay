@@ -4,20 +4,11 @@ import PersonTemplate from '../Templates/PersonTemplate'
 
 
 class Person extends Component {
-    _isDataReady = () => {
-        const { relay: { variables: { status }, pendingVariables } } = this.props;
-        // relay.variables.status always equals to props.status
-        // pendingVariables null
-        // this approach doesn't work
-        // on top of that, you get `rendered with variables that differ from the variables used to fetch fragment viewer`
-        return  !pendingVariables;
-    }
     render() {
         const { viewer: { person }, relay } = this.props
-        return (this._isDataReady() ? <div>
+        return <div>
             <PersonTemplate person={person} />
-        </div> : <div>loading...</div>
-        )
+        </div>
     }
 }
 

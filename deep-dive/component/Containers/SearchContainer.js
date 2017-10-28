@@ -49,7 +49,7 @@ class SearchContainer extends Component {
         this.setState({
             selectedStatus: value,
         })
-        const { relay } = this.props
+
         // !! I could have 2 children <div> <Person /> <Person/> </div>
         // each <Person /> could have different fragment variables;
         //     remember Query is static, a Query contains fragment which is also static; but fragment variables is per instance
@@ -57,15 +57,28 @@ class SearchContainer extends Component {
         // but we couldn't becuase we have 2 different ones
         // that's why parent has to override child variables , but this is only to be limited to the case where parent has choosen to do Fragment Override
         // more, see: https://github.com/facebook/relay/issues/1138
-        relay.setVariables({
+        this.props.relay.setVariables({
             status: value,
         })
     }
+
+    isLoading1 = () => {
+        const { selectedStatus } = this.state;
+        const { variables: { status: fragmentStatus } } = this.props.relay;
+        return selectedStatus !== fragmentStatus;
+    }
+
+    isLoading2 = () => {
+        const { relay: { variables, pendingVariables } } = this.props
+        return !!pendingVariables && 'status' in pendingVariables;
+    }
+
     render() {
         const { viewer, viewer: { counter }, relay } = this.props
 
-        // to hand on fragment to child components
+        // shouldn't use this.state.selectedStatus as that could being fetched; not ready yet;
         const { selectedStatus } = this.state;
+        const { variables: { status: fragmentStatus } } = this.props.relay;
         return (<div>
             <div style={{ marginTop: 40 }}>
                 {/* handle mutation*/}
@@ -77,16 +90,18 @@ class SearchContainer extends Component {
             <div style={{ marginTop: 40, borderTop: 'solid 1px grey' }}>
                 {this._displayPendingQuery()}
                 <div>
-                    <select name='person_filter_dp' 
-                            value={selectedStatus} 
-                            onChange={this.onStatusChange} >
+                    <select name='person_filter_dp'
+                        value={selectedStatus}
+                        onChange={this.onStatusChange} >
                         <option value='any'>Any</option>
                         <option value='open'>Open</option>
                         <option value='in_progress'>In Progress</option>
                         <option value='passed'>Passed</option>
                     </select>
                 </div>
-                <Person viewer={viewer} status={selectedStatus} />
+                {this.isLoading2() ? <h2>loading...</h2>
+                    : <Person viewer={viewer} status={fragmentStatus} />}
+
             </div>
         </div>)
     }
