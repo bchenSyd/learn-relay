@@ -12,15 +12,15 @@ let App = (props) => {
                     <li style={{ color: 'grey' }}>_cachedStore: RelayRecordStore;</li>
                 </ul>
             </div>
-            {/* CATCH
-                1. this.setVariables => change relay instance => 
-                so, if you want your component to **immediately**   re-render after setVariables
-                you need to pass relay here, or  simply do {...props} 
-                2. you must forward status={props.status} to <SearchContainer> component
-                   becuase you have   ${SearchContainer.getFragment('viewer', variables)} which override SearchContainer's default variables
+            {/* why does my `relay.pendingVariables` already return null?
+                1. this.setVariables => change relay instance (the one in context) => 
+                   simply do {...props} to make sure new relay instance is passed in (so that `relay.pendingVarialbes` won't be null)
+
+                2. you must forward status={props.status} as render variables (in props)
+                   need to match fetch varialbes (in fragment variables overrides)
                 //source code see: D:\__work\relay-digest\container\RelayContainer.ts line:540
            */}
-            <SearchContainer  viewer={props.viewer}  status={props.status}/>
+            <SearchContainer  viewer={props.viewer}  status={props.status} relay={props.relay}/>
         </div>
     );
 };
