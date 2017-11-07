@@ -1,7 +1,36 @@
 # why my *pendingVariables* is null?
 1. `searchContainer` called `setVarialbes()` so `seacherContainer` should do `pendingVariables i.e. isloading` check
-2. `searchContainer` called `setVarialbes()` so `<SearchContainer viewer={viewer} status={newStatus} relay={props.realy} />` is required
+   > i.e. whoever initiates the query should do the `pendingVarialbes` check
+2. `searchContainer` called `setVarialbes()` so `<SearchContainer viewer={viewer} status={newStatus} relay={props.relay} />` is required
+   > if you ommit passing `relay={props.relay}`, you get the same result as you observed in `BetReceiptsHolder.tsx`
+  ```javascript
+    shouldComponentUpdate(
+      nextProps: Object,
+      nextState: any,
+      nextContext: any,
+    ): boolean {
 
+    // a relay container only get re-renders in 3 scenarios
+    return ( /* #1 it's normal props changes !! 
+            this is why you need <SearchContainer relay={props.relay}/> */
+            !RelayContainerComparators.areNonQueryPropsEqual(
+              fragments,
+              this.props,
+              nextProps,
+            ) || /* #2 query returns */
+            (fragmentPointers &&
+              !RelayContainerComparators.areQueryResultsEqual(
+                fragmentPointers,
+                this.state.queryData, 
+                nextState.queryData,
+              )) || /*#3 variables changed . never happened ? a bug?*/
+            !RelayContainerComparators.areQueryVariablesEqual(
+              this.state.relayProp.variables,
+              nextState.relayProp.variables,
+            )
+          );
+}
+```
 
 # debug mocha
 1. package chain: `source-map-support` required; installed via `bbel-regitser` which is included via `babel-cli`

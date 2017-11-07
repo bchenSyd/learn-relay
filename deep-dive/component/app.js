@@ -15,7 +15,7 @@ let App = (props) => {
             {/* why does my `relay.pendingVariables` already return null?
                 1. this.setVariables => change relay instance (the one in context) => 
                    simply do {...props} to make sure new relay instance is passed in (so that `relay.pendingVarialbes` won't be null)
-
+                   see readme.md for more details
                 2. you must forward status={props.status} as render variables (in props)
                    need to match fetch varialbes (in fragment variables overrides)
                 //source code see: D:\__work\relay-digest\container\RelayContainer.ts line:540
