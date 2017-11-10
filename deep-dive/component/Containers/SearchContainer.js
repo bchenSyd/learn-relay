@@ -16,7 +16,7 @@ class SearchContainer extends Component {
         const { relay, viewer } = this.props
         relay.commitUpdate(
             /* the Mutation expects the prop passed in has a fragment called 'viewer' (defined in its fragment builder) defined; otherwise Relay will throw an warning (anti pattern) */
-            // if you don't include Person Component's fragment in Person's fragment builder, you get the same warning 
+            // if you don't pass in a fragment container that contains the fragment defined in `person`'s fragment builder, you get the same warning 
             new increamentCounter({ viewer: viewer })
         )
     }
